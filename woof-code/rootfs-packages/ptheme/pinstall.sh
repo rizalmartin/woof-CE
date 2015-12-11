@@ -2,7 +2,7 @@
 ############################################################################
 echo
 
-for dtop in switch2 GTK-Chtheme icon_switcher; do
+for dtop in switch2 GTK-Chtheme icon_switcher Desktop-drive-icons; do
     [ -f "usr/share/applications/${dtop}.desktop" ] || continue
     if grep -q "^NoDisplay" usr/share/applications/${dtop}.desktop; then
         sed -i 's%NoDisplay=.*%NoDisplay=true%' usr/share/applications/${dtop}.desktop
@@ -140,7 +140,19 @@ echo "$BACKDROP" >> /tmp/newpin
 cat usr/share/ptheme/rox_pinboard/"${PTHEME_ROX_PIN}" >> /tmp/newpin
 echo '</pinboard>' >> /tmp/newpin
 cp -a /tmp/newpin root/Choices/ROX-Filer/PuppyPin
-echo "rox: ${PTHEME_ROX_PIN}"
+echo "rox icons arrangement (apps): ${PTHEME_ROX_PIN}"
+sleep 1 # reading time
+
+#drive icons
+if [ "$PTHEME_ROX_DRIVEICONS" ]; then
+	for I in ICONDESK ICONPARTITIONS LABELPARTITIONS ICON_PLACE_EDGE_GAP ICON_PLACE_START_GAP ICON_PLACE_SPACING ICON_PLACE_ORIENTATION; do
+		TMP="`grep "^$I" etc/eventmanager`"
+		VALUE="`grep "^$I" "usr/share/ptheme/eventmanager_driveicons/${PTHEME_ROX_DRIVEICONS}" | cut -d= -f2`"
+		[ ! "$VALUE" ] && continue
+		sed -i "s/${TMP}/${I}=${VALUE}/" etc/eventmanager
+	done
+fi
+echo "rox icons arrangement (drives): ${PTHEME_ROX_DRIVEICONS}"
 sleep 1 # reading time
 
 
