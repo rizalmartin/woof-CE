@@ -440,10 +440,11 @@ fi
 [ ! -d /proc/acpi ] && modprobe apm #v406
 
 #110823 mavrothal: Check if it is an OLPC XO and add the devices...
-#also need for no corg.conf
+#also need for no xorg.conf
 #ISITANXO=`cat /sys/class/dmi/id/product_name`
 if [ $UDEVVER -gt 150 ] ; then
-   udevadm trigger  --action=add --subsystem-match="input" --subsystem-match="sound"
+   udevadm trigger --type=subsystems --attr-nomatch=driver --action=add
+   udevadm trigger --type=devices --attr-nomatch=driver --action=add
    udevadm settle
 fi
 
