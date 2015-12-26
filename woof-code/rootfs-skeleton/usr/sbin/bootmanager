@@ -421,8 +421,16 @@ initlist_func () {
     initmodules &
 }
 
-INITPATH=/mnt/home$(dirname $(echo $PUPSFS| cut -f3 -d,))
-ISTHERE=$(gunzip -c $INITPATH/initrd.gz | grep -s PIMOD | grep matches)
+INITMNPT="$(grep -m1 "$PDEV1" /proc/mounts | cut -f 2 -d ' ')"
+if [ "$INITMNPT" = "" ]; then
+	mount -t $DEV1FS /dev/$PDEV1 /mnt/data
+	if [ $? -eq 0 ]; then
+		ISTHERE="$(gunzip -c /mnt/data${PSUBDIR}/initrd.gz | grep -s pimod | grep matches)"
+		umount /mnt/data
+	fi
+else
+	ISTHERE="$(gunzip -c ${INITMNPT}${PSUBDIR}/initrd.gz | grep -s pimod | grep matches)"
+fi
 if [ "$ISTHERE" -a "$(which initmodules)" ]; then
    INITBUTTON='<hbox>
             <text><label>'$(gettext 'Load  the specified module(s) early in the boot process')'</label></text>
