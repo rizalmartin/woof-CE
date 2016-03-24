@@ -1,0 +1,2 @@
+# slackware 14.2 now ships and asound.conf.new redirecting to pulseaudio
+find etc -type f -name 'asound*' -maxdepth 1 -delete
