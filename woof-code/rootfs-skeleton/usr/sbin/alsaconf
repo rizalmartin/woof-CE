@@ -792,11 +792,11 @@ alias sound-slot-0 $CARD_DRIVER" >> $addcfg
       $rcalsasound restart
     fi
     #101015 need to restart volume tray applet...
-    if [ -f /root/Startup/obmixer_tray ];then
-     [ "`pidof obmixer_tray`" = "" ] && nohup /root/Startup/obmixer_tray >/dev/null &
+    if [ -f "$HOME/Startup/obmixer_tray" ];then
+     [ "`pidof obmixer_tray`" = "" ] && nohup $HOME/Startup/obmixer_tray >/dev/null &
     fi
-    if [ -f /root/Startup/retrovol_tray ];then
-     [ "`pidof retrovol`" = "" ] && nohup /root/Startup/retrovol_tray >/dev/null &
+    if [ -f "$HOME/Startup/retrovol_tray" ];then
+     [ "`pidof retrovol`" = "" ] && nohup $HOME/Startup/retrovol_tray >/dev/null &
     fi
     echo Setting default volumes...
     if [ -x $bindir/set_default_volume ]; then

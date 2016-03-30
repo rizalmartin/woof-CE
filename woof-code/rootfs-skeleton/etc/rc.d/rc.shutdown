@@ -365,12 +365,12 @@ rm -f /var/log/X*
 #rm -rf /tmp/*
 rm -f /var/lock/LCK*
 rm -f /var/run/*.pid
-rm -rf /root/tmp 2> /dev/null #...note, not screening this out in any of above save modes.
-rm -rf /root/.thumbnails/* 2> /dev/null
+rm -rf $HOME/tmp 2> /dev/null #...note, not screening this out in any of above save modes.
+rm -rf $HOME/.thumbnails/* 2> /dev/null
 [ -d /var/tmp ] && rm -rf /var/tmp/* 2> /dev/null #100820
 #110808 L18L if geany still running at shutdown, need these...
 rm -f /tmp/geany_socket* 2>/dev/null
-[ -d /root/.config/geany ] && rm -f /root/.config/geany/geany_socket* 2>/dev/null
+[ -d "$HOME/.config/geany" ] && rm -f $HOME/.config/geany/geany_socket* 2>/dev/null
 [ -f /etc/rc.d/MORESFS ] && rm /etc/rc.d/MORESFS
 sync
 

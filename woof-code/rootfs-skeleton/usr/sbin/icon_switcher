@@ -55,9 +55,9 @@ func_switch (){
  
 	#modify jwm to use menu icon 'start-button.png' if present...
 	#note, similar code also in 3builddistro in Woof.
-	if [ -f /root/.jwmrc-tray ] && [ -f /usr/local/lib/X11/${NEWTHEME}/start-button.png ]; then #chosen theme has menu icon.
+	if [ -f "$HOME/.jwmrc-tray" ] && [ -f /usr/local/lib/X11/${NEWTHEME}/start-button.png ]; then #chosen theme has menu icon.
 		if [ -f /usr/local/lib/X11/pixmaps/start-button.png ];then #precaution.
-			if [ ! "`grep -F 'start-button.png' /root/.jwmrc-tray`" ]; then
+			if [ ! "`grep -F 'start-button.png' $HOME/.jwmrc-tray`" ]; then
 				#the default is to use 'mini-dog.xpm' with text "Menu"...
 				sed -i 's%label="Menu" icon="puppy.svg"%icon="start-button.png"%' $HOME/.jwmrc-tray
 			fi
@@ -71,7 +71,7 @@ func_switch (){
 	echo -n "$NEWTHEME" > /etc/desktop_icon_theme
 	if [ "$UPDATE" = "true" ]; then
 		#restart rox and jwm immediately...
-		rox -p=/root/Choices/ROX-Filer/PuppyPin
+		rox -p=$HOME/Choices/ROX-Filer/PuppyPin
 		jwm -restart
 		#kill splash
 		kill $XPID
@@ -180,7 +180,7 @@ else
 	pixmap_path "'$BG_PATH'"
 	style "bg" { bg_pixmap[NORMAL] = "'$BG_NAME'" }
 	widget "*bg*" style "bg"' > /tmp/gtkrc_bg
-	export GTK2_RC_FILES=/tmp/gtkrc_bg:/root/.gtkrc-2.0
+	export GTK2_RC_FILES=/tmp/gtkrc_bg:$HOME/.gtkrc-2.0
 
 	. /usr/lib/gtkdialog/xml_info gtk #build bg_pixmap for gtk-theme
 	gtkdialog -p ICONSWITCHGUI

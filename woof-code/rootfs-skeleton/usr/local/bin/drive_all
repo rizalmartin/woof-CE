@@ -133,8 +133,8 @@ case $PARAM1 in
   MNTPT="`df -a| grep -m1 "$mPATTERN" | tr -s ' ' | cut -f 6 -d ' '`" #140702 shinobar
   if [ "$MNTPT" ];then
    #get coords of desktop icon...
-   drPTN=">/root/.pup_event/drive_${ONEDRVNAME}<"
-   PPENTRY="`grep "$drPTN" /root/Choices/ROX-Filer/PuppyPin`"
+   drPTN=">$HOME/.pup_event/drive_${ONEDRVNAME}<"
+   PPENTRY="`grep "$drPTN" $HOME/Choices/ROX-Filer/PuppyPin`"
    if [ "$PPENTRY" ];then
     xleft="`echo -n "$PPENTRY" | grep -o ' x="[0-9]*"' | cut -f 2 -d '"'`" #'geany
     ytop="`echo -n "$PPENTRY" | grep -o ' y="[0-9]*"' | cut -f 2 -d '"'`" #'geany
@@ -265,6 +265,7 @@ if [ "$FLAGOPTICAL" = "yes" ];then
    ln -snf /dev/${ONEDRVNAME} /dev/dvd
    [ -f /usr/local/bin/defaultdvdplayer ] && exec defaultdvdplayer
    [ "`grep '^exec mplayer' /usr/local/bin/defaultmediaplayer`" != "" ] && exec defaultmediaplayer dvdnav:// #100719 #140712 ^exec
+   [ "`grep '^exec vlc' /usr/local/bin/defaultmediaplayer`" != "" ] && exec defaultmediaplayer dvd:///dev/dvd
    exec defaultmediaplayer dvd://
    ;;
   0) #failed to detect type.

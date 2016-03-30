@@ -17,8 +17,8 @@
 . /etc/rc.d/PUPSTATE
 #110126 ATADRIVES is all ide/pata/sata drives (not usb, not optical).
 
-if [ -f /root/.usb-drive-log-probedisk ];then #force /proc upate mechanism
- for ONEUSBDRV in `cat /root/.usb-drive-log-probedisk | tr '\n' ' '`
+if [ -f "$HOME/.usb-drive-log-probedisk" ];then #force /proc upate mechanism
+ for ONEUSBDRV in `cat $HOME/.usb-drive-log-probedisk | tr '\n' ' '`
  do
   #disktype /dev/$ONEUSBDRV > /dev/null 2>&1
   dd if=/dev/$ONEUSBDRV of=/dev/null bs=512 count=1 >/dev/null 2>&1 #v4.01 faster.
@@ -56,9 +56,9 @@ do
      #log if usb drive (not a ata drive)... v4.01... 110126...
      if [ "`echo "$ATADRIVES" | grep "$ONEDRV"`" = "" ];then
       MEDIA="usbdrv" #v4.01
-      echo "$ONEDRV" >> /root/.usb-drive-log-probedisk
-      sort -u /root/.usb-drive-log-probedisk > /tmp/usb-drive-log-probedisk-tmp
-      mv -f /tmp/usb-drive-log-probedisk-tmp /root/.usb-drive-log-probedisk
+      echo "$ONEDRV" >> $HOME/.usb-drive-log-probedisk
+      sort -u $HOME/.usb-drive-log-probedisk > /tmp/usb-drive-log-probedisk-tmp
+      mv -f /tmp/usb-drive-log-probedisk-tmp $HOME/.usb-drive-log-probedisk
       #find out if a usb floppy drive...
       if [ -e /sys/block/${ONEDRV}/size ];then
        [ "`cat /sys/block/${ONEDRV}/size`" = "2880" ] && MEDIA="floppy"

@@ -947,7 +947,7 @@ if [ "$SET_COUNTRY" ];then
   DEFAULT_NUMLOCK="false"
   CHECKNUMLOCKXML=""
   if which numlockx >/dev/null;then
-   [ -x /root/Startup/numlockx ] && [ "`grep '^numlockx on' /root/Startup/numlockx`" != "" ] && DEFAULT_NUMLOCK="true"
+   [ -x "$HOME/Startup/numlockx" ] && [ "`grep '^numlockx on' $HOME/Startup/numlockx`" != "" ] && DEFAULT_NUMLOCK="true"
    CHECKNUMLOCKXML='
    <hbox tooltip-text="'$(gettext 'Tick checkbox to turn on keyboard numlock')'" space-expand="true" space-fill="true">
      <checkbox space-expand="false" space-fill="false">
@@ -1363,8 +1363,8 @@ if [ "$SET_KEYBOARD" ];then
   FLAG_CHANGED="${FLAG_CHANGED}$(gettext 'Keyboard numlock'):yes|"
   STATUS_NUMLOCK=off
   [ "$CHECK_NUMLOCK" = "true" ] && STATUS_NUMLOCK=on
-  echo -e "#!/bin/sh\nnumlockx ${STATUS_NUMLOCK}" > /root/Startup/numlockx
-  chmod 755 /root/Startup/numlockx
+  echo -e "#!/bin/sh\nnumlockx ${STATUS_NUMLOCK}" > $HOME/Startup/numlockx
+  chmod 755 $HOME/Startup/numlockx
   numlockx ${STATUS_NUMLOCK} #do it now.
  fi
 fi #end SET_KEYBOARD
@@ -1744,16 +1744,16 @@ if [ "$SET_NETWORK" ];then #120227
  #120625...
  if [ "$CHECK_NTP" != "$DEFAULT_NTP" ];then
   if [ "$CHECK_NTP" = "false" ];then
-   chmod 664 /root/Startup/timesync.sh #so it won't run next bootup.
+   chmod 664 $HOME/Startup/timesync.sh #so it won't run next bootup.
    FLAG_CHANGED="${FLAG_CHANGED}$(gettext 'NTP set-time disabled'):yes|"
   else
-   [ -f /root/Startup/timesync.sh ] && chmod 755 /root/Startup/timesync.sh
-   if [ -x /root/Startup/timesync.sh ];then
-    /root/Startup/timesync.sh &
+   [ -f $HOME/Startup/timesync.sh ] && chmod 755 $HOME/Startup/timesync.sh
+   if [ -x "$HOME/Startup/timesync.sh" ];then
+    $HOME/Startup/timesync.sh &
     FLAG_CHANGED="${FLAG_CHANGED}$(gettext 'NTP set-time enabled'):yes|"
    else
     /usr/local/psync/psync
-    if [ -x /root/Startup/timesync.sh ];then
+    if [ -x "$HOME/Startup/timesync.sh" ];then
      FLAG_CHANGED="${FLAG_CHANGED}$(gettext 'NTP set-time enabled'):yes|"
     else
      #/tmp/settertime created by /usr/local/psync/psyncfunc

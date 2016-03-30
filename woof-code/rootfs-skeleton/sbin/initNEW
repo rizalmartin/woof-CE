@@ -176,8 +176,8 @@ read -t 240 abcdef
   rm -rf /tmp/*
   rm -f /var/lock/LCK*
   rm -f /var/run/*.pid
-  rm -rf /root/tmp 2>/dev/null
-  rm -rf /root/.thumbnails/* 2>/dev/null
+  rm -rf $HOME/tmp 2>/dev/null
+  rm -rf $HOME/.thumbnails/* 2>/dev/null
   #120716 weird bug raspi, can't find 'tr', so use 'busybox tr'...
   rm -f `find /var -mount -type s | busybox tr '\n' ' '` #remove sockets.
   rm -f `find /var -mount -type p | busybox tr '\n' ' '` #remove pipes.

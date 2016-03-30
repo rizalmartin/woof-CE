@@ -163,8 +163,8 @@ if [ "$PMEDIA" = "usbflash" ];then
 fi
 
 #v2.17 suggested by andrei...
-if [ -d /root/Startup ];then
- for a in /root/Startup/*
+if [ -d "$HOME/Startup" ];then
+ for a in $HOME/Startup/*
  do
   if [ -x "$a" ];then $a & #jamesbond
   fi

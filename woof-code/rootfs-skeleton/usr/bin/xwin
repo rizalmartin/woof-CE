@@ -56,7 +56,7 @@ if [ "$DISTRO_XORG_AUTO" != "yes" ];then # big if
 		esac
 	
 			if [ -f /etc/xorgoverrides ] && grep -q -f /etc/xorgoverrides /tmp/ddcprobe.txt;then
-				rm -f /root/.XLOADED 2> /dev/null #not necessary, precaution.
+				rm -f $HOME/.XLOADED 2> /dev/null #not necessary, precaution.
 				#1st dialog offers to use Xvesa...
 				/usr/sbin/xorgwizard
 				HAVEX="`readlink /usr/bin/X`"
@@ -246,7 +246,7 @@ if [ -f /usr/bin/Xorg ];then
 		fi
 	fi
 	if [ ! -f /etc/X11/xorg.conf ];then
-		rm -f /root/.XLOADED 2> /dev/null #not necessary, precaution.
+		rm -f $HOME/.XLOADED 2> /dev/null #not necessary, precaution.
 		if [ "$DISTRO_XORG_AUTO" != "yes" ];then #see /etc/DISTRO_SPECS.
 			#1st dialog offers to use Xvesa...
 			/usr/sbin/xorgwizard
@@ -432,7 +432,7 @@ case $HAVEX in
 		/usr/bin/xinit /etc/X11/xinitrc --  > /tmp/xerrs.log 2>&1
 	;;
 esac
-echo -n "false" > /root/.XLOADED #see note above.
+echo -n "false" > $HOME/.XLOADED #see note above.
 #...if PC hung, run xorgwizard at next bootup (see further up).
 
 load_consolefont #120301 seems have to do this on exit from X. (new script)

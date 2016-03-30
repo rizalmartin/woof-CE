@@ -86,7 +86,7 @@ do
  TARGETFILE="`echo -n "$ASECTIONID" | tr "${MARKERCHAR}" '/'`" #ex: /root/Choices/ROX-Filer/PuppyPin
  [ ! -f "$TARGETFILE" ] && continue #precaution.
  #hack, really should not process /root/Choices/ROX-Filer/PuppyPin in sss-domain, only suited to static files...
- [ "$TARGETFILE" = "/root/Choices/ROX-Filer/PuppyPin" ] && echo -n "ICONWIPE" >/var/local/pup_event_icon_change_flag #see clean_desk_icons
+ [ "$TARGETFILE" = "$HOME/Choices/ROX-Filer/PuppyPin" ] && echo -n "ICONWIPE" >/var/local/pup_event_icon_change_flag #see clean_desk_icons
  echo "$CODEBLOCK" > /tmp/fixdesk-translationblock
  #121124 ensure that all [ ] are escaped... 121125 revert... 121126 restore, plus escape '.' chars...
  sed -i -e 's%\[%\\[%g' -e 's$\]$\\]$g' -e 's%\\\\\[%\\[%g' -e 's%\\\\\]%\\]%g' /tmp/fixdesk-translationblock

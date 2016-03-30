@@ -395,11 +395,11 @@ PROBEDISK="probedisk"
 
 #v4.01 toggle tabbed interface...
 SINGLEFLAG="true" #default tabbed interface.
-[ -f /root/.pmountsingle ] && SINGLEFLAG="`cat /root/.pmountsingle`"
+[ -f "$HOME/.pmountsingle" ] && SINGLEFLAG="`cat $HOME/.pmountsingle`"
 
 #v4.02 quit immediately after choosing to mount/umount a partition... v404 change to false
 PMOUNTQUIT="false" #"true" v404 change to false
-[ -f /root/.pmountquit ] && PMOUNTQUIT="`cat /root/.pmountquit`"
+[ -f "$HOME/.pmountquit" ] && PMOUNTQUIT="`cat $HOME/.pmountquit`"
 #but if starting pmount from menu or 'drives' icon, do not quit...
 [ "$1" = "any" -o "$1" = "" ] && PMOUNTQUIT="false"
 
@@ -806,8 +806,8 @@ if [ "$EXIT" = "SETPREFS" ];then
  RETPARAMS="`echo "$DLGSETENG" | gtkdialog --stdin`"
  eval "$RETPARAMS"
  if [ "$EXIT" = "OK" ];then
-  echo "$NEWSINGLEFLAG" > /root/.pmountsingle
-  echo "$NEWPMOUNTQUIT" > /root/.pmountquit
+  echo "$NEWSINGLEFLAG" > $HOME/.pmountsingle
+  echo "$NEWPMOUNTQUIT" > $HOME/.pmountquit
  fi
  exec /usr/sbin/$PMOUNT $TOPACTUAL
 fi

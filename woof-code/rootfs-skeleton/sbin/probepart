@@ -30,8 +30,8 @@
 SUNITS="$1" #allowed params are '-k' or '-m'.
 OUTPUT=""
 
-if [ -f /root/.usb-drive-log-probepart ];then #force /proc upate mechanism
- for ONEUSBDRV in `cat /root/.usb-drive-log-probepart | tr '\n' ' '`
+if [ -f "$HOME/.usb-drive-log-probepart" ];then #force /proc upate mechanism
+ for ONEUSBDRV in `cat $HOME/.usb-drive-log-probepart | tr '\n' ' '`
  do
   #disktype /dev/$ONEUSBDRV > /dev/null 2>&1
   dd if=/dev/$ONEUSBDRV of=/dev/null bs=512 count=1 >/dev/null 2>&1 #v3.97 faster.
@@ -146,9 +146,9 @@ do
    #log if usb drive (not a ata drive)...
    DEVDRV="`echo -n "$DEVICE" | tr -d '[0-9]'`"
    if [ "`echo "$ATADRIVES" | grep "$DEVDRV"`" = "" ];then #110126
-    echo "$DEVDRV" >> /root/.usb-drive-log-probepart
-    sort -u /root/.usb-drive-log-probepart > /tmp/usb-drive-log-probepart-tmp
-    mv -f /tmp/usb-drive-log-probepart-tmp /root/.usb-drive-log-probepart
+    echo "$DEVDRV" >> $HOME/.usb-drive-log-probepart
+    sort -u $HOME/.usb-drive-log-probepart > /tmp/usb-drive-log-probepart-tmp
+    mv -f /tmp/usb-drive-log-probepart-tmp $HOME/.usb-drive-log-probepart
    fi
    ;;
  esac

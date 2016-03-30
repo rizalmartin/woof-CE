@@ -17,8 +17,8 @@ RUNNINGIN="standalone"
 case $RUNNINGIN in
  standalone) #execute in a running puppy, no passed param.
   GTKRCS="`ls /usr/share/themes/*/gtk-2.0/gtkrc | grep -v ' ' | tr '\n' ' '`"
-  XRESFILE="/root/.Xresources"
-  JWMTHEMES="`ls /root/.jwm/themes/*-jwmrc | tr '\n' ' '`"
+  XRESFILE="$HOME/.Xresources"
+  JWMTHEMES="`ls $HOME/.jwm/themes/*-jwmrc | tr '\n' ' '`"
   ROXPREFIX="/"
  ;;
  woof)
@@ -30,7 +30,7 @@ case $RUNNINGIN in
  ;;
  single) #called from ppm.
   eval "$@" #ex: GTKRCS=/usr/share/themes/Citrus/gtk-2.0/gtkrc
-  XRESFILE="/root/.Xresources"
+  XRESFILE="$HOME/.Xresources"
  ;;
 esac
 JWMPREFIX="$ROXPREFIX"
