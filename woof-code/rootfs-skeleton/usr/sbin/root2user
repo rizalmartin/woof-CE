@@ -50,7 +50,7 @@ for group in lpadmin disk audio lp dialout kmem video floppy cdrom tty plugdev ;
 	adduser -G $group $NEWUSER
 done
 # use /root as a skeleton
-for file in `ls -a /root|grep -v -E '\.$|\.\.$|spot|Web-Server|\.spot-status|\.cache|\.mozilla'` ;do #probably need more
+for file in `ls -a /root|grep -v -E '\.$|\.\.$|spot|Web-Server|\.spot-status|\.cache|\.mozilla|\.dbus|\.macromedia|\.pup_event'` ;do #probably need more
 	echo $file >/root/${NEWUSER}.log
 	cp -r /root/${file} $NEWHOME/
 done
