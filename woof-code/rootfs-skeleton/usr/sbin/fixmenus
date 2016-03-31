@@ -14,9 +14,9 @@
 #120209 this script now called from /usr/sbin/quicksetup, whenever locale is changed.
 #120216 sss translation file now uses simple sed expressions.
 #120524 bug fix.
-
+#set -x
 #100427
-[ ! "$HOME" ] && HOME='/root'
+[ -z "$HOME" ] && HOME='/root'
 [ "$HOME" = "/" ] && HOME='/root'
 export HOME
 
@@ -37,7 +37,12 @@ TEMPLATES="`ls -1 /etc/xdg/templates | tr '\n' ' '`"
 for ONETPL in $TEMPLATES #ex: _root_.jwmrc
 do
  [ "$ONETPL" = "README.txt" ] && continue
- ONEDEST="`echo -n "$ONETPL" | sed -e 's/_/\//g'`"
+  BASE=${ONETPL##*_}
+ if [ $UID -eq 0 ];then
+  ONEDEST=/root/${BASE}
+ else
+  ONEDEST=${HOME}/${BASE}
+ fi 
  ONESRC="/etc/xdg/templates/$ONETPL"
  echo "Generating $ONEDEST..."
  
