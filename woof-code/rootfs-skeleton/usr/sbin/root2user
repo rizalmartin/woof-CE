@@ -93,6 +93,9 @@ busybox chmod u+s `which ddcprobe`
 [ "`which Xorg`" ] && busybox chmod u+s `which Xorg`
 [ "`which urxvt`" ] && busybox chmod u+s `which urxvt`
 
+# give permission to use drive icons
+chown -R root:users /root/.pup_event
+
 #120317 L18L: ref http://murga-linux.com/puppy/viewtopic.php?t=71358&start=60
 chgrp users /dev/console
 chmod g+w /dev/console
