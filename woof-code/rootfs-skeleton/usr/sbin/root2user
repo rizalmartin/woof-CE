@@ -42,16 +42,22 @@ fi
 # as user
 # precaution
 grep -q "^$NEWUSER" /etc/passwd && deluser $NEWUSER
+sync
 # user id must be over 1000
 userid=`grep -o -E '10[0-9][0-9]' /etc/passwd |sort | tail -n1`
 userid=$(($userid + 1))
 adduser -h $NEWHOME -s /bin/sh -G users -u $userid -D $NEWUSER
 for group in lpadmin disk audio lp dialout kmem video floppy cdrom tty plugdev ;do
-	adduser -G $group $NEWUSER
+	if grep -w "^$group" /etc/group | grep -q "$NEWUSER";then
+		echo "$NEWUSER is already a member of $group group" >>/root/${NEWUSER}.log
+	else
+		echo "Adding $NEWUSER to $group group" >>/root/${NEWUSER}.log
+		 addgroup -S $NEWUSER $group 2>/dev/null
+	fi
 done
 # use /root as a skeleton
-for file in `ls -a /root|grep -v -E '\.$|\.\.$|spot|Web-Server|\.spot-status|\.cache|\.mozilla|\.dbus|\.macromedia|\.pup_event'|\.packages` ;do #probably need more
-	echo $file >/root/${NEWUSER}.log
+for file in `ls -a /root|grep -v -E '\.$|\.\.$|spot|Web-Server|\.spot-status|\.cache|\.mozilla|\.dbus|\.macromedia|\.pup_event|\.packages|*\.log'` ;do #probably need more
+	echo $file >>/root/${NEWUSER}.log
 	cp -r /root/${file} $NEWHOME/
 done
 echo 'export PS1="\u \$ "' >>  $NEWHOME/.bashrc
@@ -119,9 +125,9 @@ kill = ssx root.0
 
 #i made /dev/pts 777 (was 707) in rootfs-skeleton in Woof.
 
-#optional, change root password, and require password to 'su root'...
+#optional, change root password, and require password to 'su root'... but only for fido
 ROOTPASSWORD="`${DIALOGEXE} ${BACKGROUNDYELLOW} ${TITLEPARAM} "First shutdown: ask admin password" --stdout --nocancel --inputbox "Please enter a password for the administrator (root), minimum six characters.\n\nLogin as ${NEWUSER} does not require a password, so at bootup you will go directly to the desktop. This is also the case if you had chosen to run as administrator. However, having chosen the restricted ${NEWUSER} user, you will be required to enter a password whenever you want to perform an operation that requires admin priviledges.\n\nPLEASE REMEMBER THIS PASSWORD" 0 0 ""`"
-echo "root:${ROOTPASSWORD}" | busybox chpasswd #--md5
+[ "${NEWUSER}" == 'fido' ] && echo "root:${ROOTPASSWORD}" | busybox chpasswd #--md5
 #sudo asks for user password, not root, simple solution give same password to both...
 #(that is the default, but i have specified runaspw in /etc/sudoers to ask for root pw)
 echo "${NEWUSER}:${ROOTPASSWORD}" | busybox chpasswd #--md5
