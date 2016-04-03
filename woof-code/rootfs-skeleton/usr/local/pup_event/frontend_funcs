@@ -68,7 +68,7 @@ free_coord() {
  #find a free place on desktop. v410 avoid exact overlapping icons...
  #091208 finetune placement, also any side of screen...
  #read the coords grid, code from shinobar...
- COORDSGRID="`grep -o ' x="[0-9]*" y="[0-9]*" ' /root/Choices/ROX-Filer/PuppyPin | sed 's/[0-9]"/"/g'`"
+ COORDSGRID="`grep -o ' x="[0-9]*" y="[0-9]*" ' $HOME/Choices/ROX-Filer/PuppyPin | sed 's/[0-9]"/"/g'`"
  PIN_GRID_STEP=`grep "pinboard_grid_step" $HOME/.config/rox.sourceforge.net/ROX-Filer/Options | sed -e "s/ *<[^>]*>//g"`
  [ ! $PIN_GRID_STEP ] && PIN_GRID_STEP=16 #16=medium.
  [ $PIN_GRID_STEP -eq 0 ] && PIN_GRID_STEP=16 #precaution.
@@ -163,7 +163,7 @@ add_pinboard_func() { #needs ONEDRVNAME, DRV_CATEGORY, FSTYPE
  #ppPATTERN=' label="'"$ONEDRVNAME"'"'
  #v411 rerwin: avoid icon getting duplicated if it is renamed...
  ppPATTERN="/root/.pup_event/drive_${ONEDRVNAME}<"
- [ "`grep "$ppPATTERN" /root/Choices/ROX-Filer/PuppyPin`" != "" ] && return #precaution.
+ [ "`grep "$ppPATTERN" $HOME/Choices/ROX-Filer/PuppyPin`" != "" ] && return #precaution.
  free_coord
  #120503 the label "mmcblk0p1" (SD memory cards via mmc interface) is too long...
  cutONEDRVNAME="`echo -n "${ONEDRVNAME}" | sed -e 's%cblk%%'`"
@@ -276,8 +276,8 @@ create_icon_func() {
 
 remove_pinboard_func() { #needs DRV_NAME (name of entire drive)
  rpPTN="drive_${DRV_NAME}[^<]*" #130610 label may differ from drv name.
- [ "`grep "$rpPTN" /root/Choices/ROX-Filer/PuppyPin`" = "" ] && return
- ALLNAMES="`grep -o "$rpPTN" /root/Choices/ROX-Filer/PuppyPin | cut -f 2 -d '_' | cut -f 1 -d '<' | tr '\n' ' '`"
+ [ "`grep "$rpPTN" $HOME/Choices/ROX-Filer/PuppyPin`" = "" ] && return
+ ALLNAMES="`grep -o "$rpPTN" $HOME/Choices/ROX-Filer/PuppyPin | cut -f 2 -d '_' | cut -f 1 -d '<' | tr '\n' ' '`"
  for ONEDRVNAME in $ALLNAMES
  do
   echo "<?xml version=\"1.0\"?>

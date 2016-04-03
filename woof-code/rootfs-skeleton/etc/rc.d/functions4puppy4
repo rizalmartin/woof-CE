@@ -64,8 +64,8 @@ icon_unmounted_func() {
  [ "$2" = "floppy" ] && DRVICON="floppy48.png"
  [ "$2" = "optical" ] && DRVICON="optical48.png"
  #find out if already done...
- if [ -f /root/.config/rox.sourceforge.net/ROX-Filer/globicons ];then
-  GLOBLINES="`cat /root/.config/rox.sourceforge.net/ROX-Filer/globicons | tr '\n' '|' | sed -e 's%</rule>|%\n%g'`"
+ if [ -f $HOME/.config/rox.sourceforge.net/ROX-Filer/globicons ];then
+  GLOBLINES="`cat $HOME/.config/rox.sourceforge.net/ROX-Filer/globicons | tr '\n' '|' | sed -e 's%</rule>|%\n%g'`"
   diPATTERN='/root/.pup_event/drive_'"${1}"'"'
   [ "`echo "$GLOBLINES" | grep "$diPATTERN" | grep "$DRVICON"`" != "" ] && return
  fi
@@ -100,8 +100,8 @@ icon_mounted_func() {
   [ "$2" = "optical" ] && DRVICON="optical_mntd_boot48.png"
  fi
  #find out if already done...
- if [ -f /root/.config/rox.sourceforge.net/ROX-Filer/globicons ];then
-  GLOBLINES="`cat /root/.config/rox.sourceforge.net/ROX-Filer/globicons | tr '\n' '|' | sed -e 's%</rule>|%\n%g'`"
+ if [ -f $HOME/.config/rox.sourceforge.net/ROX-Filer/globicons ];then
+  GLOBLINES="`cat $HOME/.config/rox.sourceforge.net/ROX-Filer/globicons | tr '\n' '|' | sed -e 's%</rule>|%\n%g'`"
   diPATTERN='/root/.pup_event/drive_'"${1}"'"'
   [ "`echo "$GLOBLINES" | grep "$diPATTERN" | grep "$DRVICON"`" != "" ] && return
  fi
