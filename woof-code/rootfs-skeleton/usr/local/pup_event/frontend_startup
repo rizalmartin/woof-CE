@@ -60,7 +60,7 @@ echo -n "$SCRN_Y" > /tmp/pup_event_frontend_scrn_y #read by frontend_change.
 
 ######################################################################
 #stuff to setup at entry...
-mkdir -p $HOME/.pup_event
+mkdir -p /root/.pup_event
 
 #build the desktop icons...
 DRV_CATEGORY='drive'
