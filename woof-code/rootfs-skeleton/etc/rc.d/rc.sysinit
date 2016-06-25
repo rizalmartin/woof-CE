@@ -882,4 +882,7 @@ if [ ! "$PUPMODE" = 5 ];then
 fi
 
 #that's it. next stop is /etc/profile...
+fakelogin
+
+/etc/rc.d/rc.shutdown
 ###END###

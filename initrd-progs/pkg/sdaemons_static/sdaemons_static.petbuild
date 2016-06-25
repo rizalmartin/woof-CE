@@ -1,0 +1,47 @@
+#!/bin/sh
+# sdaemons_static
+# Builds from https://github.com/puppylinux-woof-CE/petbuilds
+
+. ../../func
+
+# GOES TO INITRD
+
+URL=https://github.com/dimkr/sdaemons/archive
+SRC=sdaemons
+PKG=sdaemons_static
+VER=master
+COMP=zip
+DESC=""
+DEPS=
+CAT=BuildingBlock
+CWD=`pwd`
+PROGS="init daemon syslog fakelogin"
+
+build() {
+	cd ${SRC}
+	_make ${MKFLG} LDFLAGS=-static $PROGS
+	for i in $PROGS; do abort_if_file_not_found $i; done
+	install -d -m 0755 $CWD/${PKG}-${VER}-${ARCH}/bin
+	for i in $PROGS; do _install $i $CWD/${PKG}-${VER}-${ARCH}/bin; done
+	cd -
+}
+
+package() {
+	# add this recipe
+	install -d -m 0755 ./${PKG}-${VER}-${ARCH}/build
+	cat ${PKG}.petbuild > ./${PKG}-${VER}-${ARCH}/build/$PKG-build-recipe
+	# move, don't package
+	cp -a --remove-destination ./${PKG}-${VER}-${ARCH}/* ../../00_${ARCH}
+	rm -r ${SRC}-${VER}
+	rm -r ${PKG}-${VER}-${ARCH}
+	echo "moved to initrd"
+	echo "done!"
+}
+
+# main
+retrieve "${SRC}-${VER}.${COMP}"
+[ "$DLD_ONLY" = "yes" ] && exit
+extract ${SRC}-${VER}.${COMP}
+build
+package
+

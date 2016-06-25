@@ -2,11 +2,9 @@
 
 case $1 in
  start)
-  syslogd -m 0
-  klogd
+  daemon syslog
  ;;
  stop)
-  killall klogd
-  killall syslogd
+  killall syslog
  ;;
 esac
