@@ -23,7 +23,7 @@ export OUTPUT_CHARSET=UTF-8
 DB_FILE=Packages-`cat /tmp/petget/current-repo-triad` #ex: Packages-slackware-12.2-official
 
 tPATTERN='^'"$TREE1"'|'
-DB_ENTRY="`grep "$tPATTERN" /root/.packages/$DB_FILE | head -n 1`"
+DB_ENTRY="`grep "$tPATTERN" /root/.packages/repo/$DB_FILE | head -n 1`"
 #line format: pkgname|nameonly|version|pkgrelease|category|size|path|fullfilename|dependencies|description|
 #optionally on the end: compileddistro|compiledrelease|repo| (fields 11,12,13)
 
