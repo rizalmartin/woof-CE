@@ -58,9 +58,9 @@ if [ $PUPMODE -eq 3 -o $PUPMODE -eq 7 -o $PUPMODE -eq 13 ];then
   done
 fi
 
-if [ -f /root/.packages/${DB_pkgname}.files ];then
+if [ -f /root/.packages/package-files/${DB_pkgname}.files ];then
  if [ "$PUP_LAYER" = '/pup_ro2' ]; then #120103 shinobar.
-  cat /root/.packages/${DB_pkgname}.files |
+  cat /root/.packages/package-files/${DB_pkgname}.files |
   while read ONESPEC
   do
    if [ ! -d "$ONESPEC" ];then
@@ -91,7 +91,7 @@ if [ -f /root/.packages/${DB_pkgname}.files ];then
   done
  fi
  #do it again, looking for empty directories...
- cat /root/.packages/${DB_pkgname}.files |
+ cat /root/.packages/package-files/${DB_pkgname}.files |
  while read ONESPEC
  do
   if [ -d "$ONESPEC" ];then
@@ -101,7 +101,7 @@ if [ -f /root/.packages/${DB_pkgname}.files ];then
  ###+++2011-12-27 KRG
 else
  firstchar=`echo ${DB_pkgname} | cut -c 1`
- possiblePKGS=`find /root/.packages -type f -iname "$firstchar*.files"`
+ possiblePKGS=`find /root/.packages/package-files -type f -iname "$firstchar*.files"`
  possible5=`echo "$possiblePKGS" | head -n5`
  count=`echo "$possiblePKGS" | wc -l`
  [ ! "$count" ] && count=0
@@ -156,7 +156,7 @@ REMLIST="${DB_pkgname}"
 mkdir -p /tmp/petget
 echo -n "" > /tmp/petget/FILECLASHES
 echo -n "" > /tmp/petget/CLASHPKGS
-grep -v '/$' /root/.packages/${DB_pkgname}.files > /tmp/petget/${DB_pkgname}.filesFILESONLY #/ on end, it is a directory entry.
+grep -v '/$' /root/.packages/package-files/${DB_pkgname}.files > /tmp/petget/${DB_pkgname}.filesFILESONLY #/ on end, it is a directory entry.
 LATERINSTALLED="$(cat /root/.packages/user-installed-packages | cut -f 1 -d '|' | tr '\n' ' ' | grep -o " ${DB_pkgname} .*" | cut -f 3- -d ' ')"
 for ALATERPKG in $LATERINSTALLED
 do
@@ -193,9 +193,9 @@ fi
 #131230 from here down, use busybox applets only...
 export LANG=C
 #delete files...
-busybox cat /root/.packages/${DB_pkgname}.files | busybox grep -v '/$' | busybox xargs busybox rm -f #/ on end, it is a directory entry.
+busybox cat /root/.packages/package-files/${DB_pkgname}.files | busybox grep -v '/$' | busybox xargs busybox rm -f #/ on end, it is a directory entry.
 #do it again, looking for empty directories...
-busybox cat /root/.packages/${DB_pkgname}.files |
+busybox cat /root/.packages/package-files/${DB_pkgname}.files |
 while read ONESPEC
 do
  if [ -d "$ONESPEC" ];then
@@ -307,8 +307,8 @@ if [ "$UPDATE_MENUS" = "yes" ]; then
 # /usr/sbin/indexgen.sh #${WKGDIR}/${APKGNAME}
 
  #110706 update menu if .desktop file exists...
- if [ -f /root/.packages/${DB_pkgname}.files ];then
-  if [ "`grep '\.desktop$' /root/.packages/${DB_pkgname}.files`" != "" ];then
+ if [ -f /root/.packages/package-files/${DB_pkgname}.files ];then
+  if [ "`grep '\.desktop$' /root/.packages/package-files/${DB_pkgname}.files`" != "" ];then
    #Reconstruct configuration files for JWM, Fvwm95, IceWM...
    nohup /usr/sbin/fixmenus
    if [ "`pidof jwm`" != "" ];then #120101
@@ -328,7 +328,7 @@ remPATTERN='^'"$DB_pkgname"'|'
 #110211 shinobar: was the dependency logic inverted...
 DEP_PKGS="`grep "$remPATTERN" /root/.packages/user-installed-packages | cut -f 9 -d '|' | tr ',' '\n' | grep -v '^\\-' | sed -e 's%^+%%' | cut -f1 -d '&'`"
 #remove records of pkg...
-rm -f /root/.packages/${DB_pkgname}.files
+rm -f /root/.packages/package-files/${DB_pkgname}.files
 grep -v "$remPATTERN" /root/.packages/user-installed-packages > /tmp/petget-user-installed-pkgs-rem
 cp -f /tmp/petget-user-installed-pkgs-rem /root/.packages/user-installed-packages
 
