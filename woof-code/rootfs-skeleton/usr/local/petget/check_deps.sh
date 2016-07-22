@@ -107,7 +107,7 @@ dependcheckfunc() {
   [ "$FNDOO" = "" ] && LD_LIBRARY_PATH="${FNDOO}/program:${LD_LIBRARY_PATH}"
  fi
 
- FNDFILES="`cat /root/.packages/$APKGNAME.files`"
+ FNDFILES="`cat /root/.packages/package-files/$APKGNAME.files`"
  oldIFS=$IFS
  IFS='
 '
@@ -159,7 +159,7 @@ missingpkgsfunc() {
 if [ $1 ];then
  for APKGNAME in `echo -n $1 | tr '|' ' '`
  do
-  [ -f /root/.packages/${APKGNAME}.files ] && dependcheckfunc
+  [ -f /root/.packages/package-files/${APKGNAME}.files ] && dependcheckfunc
  done
 else
  #ask user what pkg to check...
