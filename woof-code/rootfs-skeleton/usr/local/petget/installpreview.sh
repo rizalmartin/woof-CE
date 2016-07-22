@@ -63,7 +63,7 @@ fi
 
 rm -f /tmp/petget_missing_dbentries-* 2>/dev/null
 
-DB_ENTRY="`grep "$tPATTERN" /root/.packages/$DB_FILE | head -n 1`"
+DB_ENTRY="`grep "$tPATTERN" /root/.packages/repo/$DB_FILE | head -n 1`"
 #line format: pkgname|nameonly|version|pkgrelease|category|size|path|fullfilename|dependencies|description|
 #optionally on the end: compileddistro|compiledrelease|repo| (fields 11,12,13)
 
@@ -455,8 +455,8 @@ fi
 iUPDATE='no'
 for iONE in `cat /tmp/petget_missing_dbentries-* | cut -f 1 -d '|' | tr '\n' ' '`
 do
- if [ -f /root/.packages/${iONE}.files ]; then
-  [ "`grep 'usr/share/icons/hicolor' /root/.packages/${iONE}.files`" != "" ] \
+ if [ -f /root/.packages/package-files/${iONE}.files ]; then
+  [ "`grep 'usr/share/icons/hicolor' /root/.packages/package-files/${iONE}.files`" != "" ] \
    && echo yes >> /tmp/iUPDATE
  fi
 done
