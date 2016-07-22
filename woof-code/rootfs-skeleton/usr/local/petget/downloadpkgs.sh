@@ -427,7 +427,7 @@ fi
   elPATTERN="`echo -n "$ENTRY_LOCALE" | tr ',' '\n' | sed -e 's%^%/%' -e 's%$%/%' | tr '\n' '|'`"
   for PKGNAME in $INSTALLEDPKGNAMES
   do
-   cat /root/.packages/${PKGNAME}.files |
+   cat /root/.packages/package-files/${PKGNAME}.files |
    while read ONEFILE
    do
     [ ! -f "$ONEFILE" ] && continue
@@ -436,8 +436,8 @@ fi
     if [ "$ENTRY_LOCALE" != "" ];then
      if [ "`echo -n "$ONEFILE" | grep --extended-regexp '/locale/|/nls/|/i18n/' | grep -v -E "$elPATTERN"`" != "" ];then
       rm -f "$ONEFILE"
-      grep -v "$ONEFILE" /root/.packages/${PKGNAME}.files > /tmp/petget_pkgfiles_temp
-      mv -f /tmp/petget_pkgfiles_temp /root/.packages/${PKGNAME}.files
+      grep -v "$ONEFILE" /root/.packages/package-files/${PKGNAME}.files > /tmp/petget_pkgfiles_temp
+      mv -f /tmp/petget_pkgfiles_temp /root/.packages/package-files/${PKGNAME}.files
       continue
      fi
     fi
@@ -445,8 +445,8 @@ fi
     if [ "$CHECK_DOCDEL" = "true" ];then
      if [ "`echo -n "$ONEFILE" | grep --extended-regexp '/man/|/doc/|/doc-base/|/docs/|/info/|/gtk-doc/|/faq/|/manual/|/examples/|/help/|/htdocs/'`" != "" ];then
       rm -f "$ONEFILE" 2>/dev/null
-      grep -v "$ONEFILE" /root/.packages/${PKGNAME}.files > /tmp/petget_pkgfiles_temp
-      mv -f /tmp/petget_pkgfiles_temp /root/.packages/${PKGNAME}.files
+      grep -v "$ONEFILE" /root/.packages/package-files/${PKGNAME}.files > /tmp/petget_pkgfiles_temp
+      mv -f /tmp/petget_pkgfiles_temp /root/.packages/package-files/${PKGNAME}.files
       continue
      fi
     fi
@@ -454,15 +454,15 @@ fi
     if [ "$CHECK_DEVDEL" = "true" ];then
      if [ "`echo -n "$ONEFILE" | grep --extended-regexp '/include/|/pkgconfig/|/aclocal|/cvs/|/svn/'`" != "" ];then
       rm -f "$ONEFILE" 2>/dev/null
-      grep -v "$ONEFILE" /root/.packages/${PKGNAME}.files > /tmp/petget_pkgfiles_temp
-      mv -f /tmp/petget_pkgfiles_temp /root/.packages/${PKGNAME}.files
+      grep -v "$ONEFILE" /root/.packages/package-files/${PKGNAME}.files > /tmp/petget_pkgfiles_temp
+      mv -f /tmp/petget_pkgfiles_temp /root/.packages/package-files/${PKGNAME}.files
       continue
      fi
      #all .a and .la files... and any stray .m4 files...
      if [ "`echo -n "$ONEBASE" | grep --extended-regexp '\.a$|\.la$|\.m4$'`" != "" ];then
       rm -f "$ONEFILE"
-      grep -v "$ONEFILE" /root/.packages/${PKGNAME}.files > /tmp/petget_pkgfiles_temp
-      mv -f /tmp/petget_pkgfiles_temp /root/.packages/${PKGNAME}.files
+      grep -v "$ONEFILE" /root/.packages/package-files/${PKGNAME}.files > /tmp/petget_pkgfiles_temp
+      mv -f /tmp/petget_pkgfiles_temp /root/.packages/package-files/${PKGNAME}.files
      fi
     fi
    done
