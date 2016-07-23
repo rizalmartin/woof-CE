@@ -4,7 +4,7 @@
 #  previewed prior to installation. ex: abiword-1.2.3
 #/tmp/petget/current-repo-triad has the repository that installing from (written in pkgchooser.sh).
 #  ex: slackware-12.2-slacky
-#  ...full package database file is /root/.packages/Packages-slackware-12.2-slacky
+#  ...full package database file is /root/.packages/repo/Packages-slackware-12.2-slacky
 #/tmp/petget_missingpkgs_patterns (written in findmissingpkgs.sh) has a list of missing dependencies, format ex:
 #  |kdebase|
 #  |kdelibs|
@@ -235,7 +235,7 @@ do
 done
 
 # Give priority to Slackware patches over official
-if [ "$DISTRO_FILE_PREFIX" = "slacko64" -o "$DISTRO_FILE_PREFIX" = "slacko" ]; then
+if [ "`echo $DISTRO_FILE_PREFIX | grep slacko`" != "" ]; then
  PATCHES=/tmp/petget_missing_dbentries-Packages-*lackware*-patches
  OFFICIAL=/tmp/petget_missing_dbentries-Packages-*lackware*-official
  SALIX=/tmp/petget_missing_dbentries-Packages-*lackware*-salix
