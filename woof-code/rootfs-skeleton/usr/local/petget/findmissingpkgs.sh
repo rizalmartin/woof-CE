@@ -64,7 +64,7 @@ if [ -s /root/.packages/user-installed-packages ];then
     if [ "$INSTALLED_PTNS_PET" != "" ];then
      xINSTALLED_PTNS_PET="$(echo "$INSTALLED_PTNS_PET" | sed -e 's%^%/%' -e 's%$%|%' -e 's%\-%\\-%g')"
      echo "$xINSTALLED_PTNS_PET" > /tmp/petget/fmp_xipp
-     INSTALLED_ALT_NAMES="$(grep --no-filename -f /tmp/petget/fmp_xipp /root/.packages/Packages-${DISTRO_BINARY_COMPAT}-${DISTRO_COMPAT_VERSION}-* | cut -f 2 -d '|')"
+     INSTALLED_ALT_NAMES="$(grep --no-filename -f /tmp/petget/fmp_xipp /root/.packages/repo/Packages-${DISTRO_BINARY_COMPAT}-${DISTRO_COMPAT_VERSION}-* | cut -f 2 -d '|')"
      if [ "$INSTALLED_ALT_NAMES" ];then
       INSTALLED_ALT_PTNS="$(echo "$INSTALLED_ALT_NAMES" | sed -e 's%^%|%' -e 's%$%|%' -e 's%\-%\\-%g')"
       echo "$INSTALLED_ALT_PTNS" > /var/local/petget/installed_alt_ptns_pet_user
