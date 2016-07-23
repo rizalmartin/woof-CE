@@ -204,7 +204,7 @@ if [ "$DISPLAY" ]; then
   if [ "$DOWNLOADED" = "yes" -o "$originPKGPATH" = "/root" ]; then
    exit 0
   else
-   rm -f /root/${FULLPKGNAME}
+   #rm -f /root/${FULLPKGNAME}
    exit 0
   fi
  fi
@@ -214,7 +214,7 @@ else
   if [ "$DOWNLOADED" = "yes" -o "$originPKGPATH" = "/root" ]; then
    exit 0
   else
-   rm -f /root/${FULLPKGNAME}
+   #rm -f /root/${FULLPKGNAME}
    exit 0
   fi
  fi
@@ -225,9 +225,9 @@ fi
 #optionally on the end: compileddistro|compiledrelease|repo| (fields 11,12,13)
 pPATTERN='^'"$PKGNAME"'|'
 if [ "$EXT" = ".pet" ];then
- DB_ENTRY="`cat /root/.packages/Packages-puppy-* | grep "$pPATTERN" | sort -r | head -n 1`"
+ DB_ENTRY="`cat /root/.packages/repo/Packages-puppy-* | grep "$pPATTERN" | sort -r | head -n 1`"
 else
- DB_ENTRY="`cat /root/.packages/Packages-${DISTRO_BINARY_COMPAT}-* | grep "$pPATTERN" | head -n 1`"
+ DB_ENTRY="`cat /root/.packages/repo/Packages-${DISTRO_BINARY_COMPAT}-* | grep "$pPATTERN" | head -n 1`"
 fi
 
 #w482 doesn't matter if incomplete, installpkg.sh will read .desktop file for description and category...
@@ -314,7 +314,7 @@ else
 fi
 
 #120819 having a category does not mean there will also be a menu entry...
-if [ "`grep '/usr/.*share/applications/.*\.desktop$' /root/.packages/${PKGNAME}.files`" = "" ];then
+if [ "`grep '/usr/.*share/applications/.*\.desktop$' /root/.packages/package-files/${PKGNAME}.files`" = "" ];then
  MENUMSG="$(gettext '...note, this package does not have a menu entry.')"
 fi
 
@@ -341,8 +341,8 @@ else
 fi
 
 #w0910 update image cache...
-if [ -f /root/.packages/${PKGNAME}.files ];then
- if [ "`grep 'usr/share/icons/hicolor' /root/.packages/${PKGNAME}.files`" != "" ];then
+if [ -f /root/.packages/package-files/${PKGNAME}.files ];then
+ if [ "`grep 'usr/share/icons/hicolor' /root/.packages/package-files/${PKGNAME}.files`" != "" ];then
   gtk-update-icon-cache -f /usr/share/icons/hicolor/
  fi
 fi
