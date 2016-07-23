@@ -3,6 +3,8 @@
 #2009 Lesser GPL licence v2 (/usr/share/doc/legal/lgpl-2.1.txt).
 #The Puppy Package Manager main GUI window.
 
+sync-repo
+
 VERSION=2
 
 #wait for indexgen.sh to finish
@@ -259,13 +261,7 @@ if [ ! -f /tmp/petget_installed_patterns_system ];then
  INSTALLED_PATTERNS_SYS="`cat /root/.packages/layers-installed-packages | cut -f 2 -d '|' | sed -e 's%^%|%' -e 's%$%|%' -e 's%\\-%\\\\-%g'`"
  echo "$INSTALLED_PATTERNS_SYS" > /tmp/petget_installed_patterns_system
  #PKGS_SPECS_TABLE also has system-installed names, some of them are generic combinations of pkgs...
- . /etc/rc.d/BOOTCONFIG
- if [ "$(echo $EXTRASFSLIST | grep $DISTRO_ZDRVSFS)" = "" -a \
-   "$(echo $LASTUNIONRECORD | grep $DISTRO_ZDRVSFS)" = "" ]; then
-  INSTALLED_PATTERNS_GEN="`echo "$PKGS_SPECS_TABLE" | grep '^yes' | grep -v 'exe>dev' | cut -f 2 -d '|' |  sed -e 's%^%|%' -e 's%$%|%' -e 's%\\-%\\\\-%g'`"
- else
-  INSTALLED_PATTERNS_GEN="`echo "$PKGS_SPECS_TABLE" | grep '^yes' | cut -f 2 -d '|' |  sed -e 's%^%|%' -e 's%$%|%' -e 's%\\-%\\\\-%g'`"
- fi
+ INSTALLED_PATTERNS_GEN="`echo "$PKGS_SPECS_TABLE" | grep '^yes' | cut -f 2 -d '|' |  sed -e 's%^%|%' -e 's%$%|%' -e 's%\\-%\\\\-%g'`"
  echo "$INSTALLED_PATTERNS_GEN" >> /tmp/petget_installed_patterns_system
  
  #120822 in precise puppy have a pet 'cups' instead of the ubuntu debs. the latter are various pkgs, including 'libcups2'.
@@ -276,7 +272,7 @@ if [ ! -f /tmp/petget_installed_patterns_system ];then
     INSTALLED_PTNS_PET="$(grep '\.pet|' /root/.packages/layers-installed-packages | cut -f 2 -d '|' | sed -e 's%^%/%' -e 's%$%|%' -e 's%\-%\\-%g')"
    if [ "$INSTALLED_PTNS_PET" != "/|" ];then
     echo "$INSTALLED_PTNS_PET" > /tmp/petget/installed_ptns_pet
-    INSTALLED_ALT_NAMES="$(grep --no-filename -f /tmp/petget/installed_ptns_pet /root/.packages/Packages-${DISTRO_BINARY_COMPAT}-${DISTRO_COMPAT_VERSION}-* | cut -f 2 -d '|')"
+    INSTALLED_ALT_NAMES="$(grep --no-filename -f /tmp/petget/installed_ptns_pet /root/.packages/repo/Packages-${DISTRO_BINARY_COMPAT}-${DISTRO_COMPAT_VERSION}-* | cut -f 2 -d '|')"
     if [ "$INSTALLED_ALT_NAMES" ];then
      INSTALLED_ALT_PTNS="$(echo "$INSTALLED_ALT_NAMES" | sed -e 's%^%|%' -e 's%$%|%' -e 's%\-%\\-%g')"
      echo "$INSTALLED_ALT_PTNS" >> /tmp/petget_installed_patterns_system
@@ -304,7 +300,7 @@ if [ -s /root/.packages/user-installed-packages ];then
     if [ "$INSTALLED_PTNS_PET" != "" ];then
      xINSTALLED_PTNS_PET="$(echo "$INSTALLED_PTNS_PET" | sed -e 's%^%/%' -e 's%$%|%' -e 's%\-%\\-%g')"
      echo "$xINSTALLED_PTNS_PET" > /tmp/petget/fmp_xipp1
-     INSTALLED_ALT_NAMES="$(grep --no-filename -f /tmp/petget/fmp_xipp1 /root/.packages/Packages-${DISTRO_BINARY_COMPAT}-${DISTRO_COMPAT_VERSION}-* | cut -f 2 -d '|')"
+     INSTALLED_ALT_NAMES="$(grep --no-filename -f /tmp/petget/fmp_xipp1 /root/.packages/repo/Packages-${DISTRO_BINARY_COMPAT}-${DISTRO_COMPAT_VERSION}-* | cut -f 2 -d '|')"
      if [ "$INSTALLED_ALT_NAMES" ];then
       INSTALLED_ALT_PTNS="$(echo "$INSTALLED_ALT_NAMES" | sed -e 's%^%|%' -e 's%$%|%' -e 's%\-%\\-%g')"
       echo "$INSTALLED_ALT_PTNS" > /var/local/petget/installed_alt_ptns_pet_user
@@ -364,7 +360,7 @@ else
 fi
 for ONEREPO in $aPRE $bPRE #ex: ' Packages-puppy-precise-official Packages-puppy-noarch-official Packages-ubuntu-precise-main Packages-ubuntu-precise-multiverse '
 do
- [ ! -f /root/.packages/$ONEREPO ] && continue
+ [ ! -f /root/.packages/repo/$ONEREPO ] && continue
  REPOCUT="`echo -n "$ONEREPO" | cut -f 2-4 -d '-'`"
  [ "$REPOS_RADIO" = "" ] && FIRST_DB="$REPOCUT"
  xREPOCUT="$(echo -n "$REPOCUT" | sed -e 's%\-official$%%')" #120905 window too wide.
@@ -400,46 +396,6 @@ if [ "$(cat /var/local/petget/ui_choice 2>/dev/null)" = "Classic" ]; then
 	. /usr/local/petget/ui_Classic
 	exit 0
 fi
-
-progressbar_info () {
-	if [ "$(cat /tmp/overall_dependencies | wc -l)" -ge 1 ];then
-		NEEDED_PGKS="$(</tmp/overall_dependencies)"
-		# Info window/dialogue (display and option to save "missing" info)
-		export NEEDED_DIALOG='
-		<window title="'$(gettext 'Puppy Package Manager')'" icon-name="gtk-about" default_height="350">
-		 <vbox space-expand="true" space-fill="true">
-		 '"`/usr/lib/gtkdialog/xml_info fixed package_add.svg 60 " " "$(gettext "Dependencies needed")"`"'
-		 <hbox space-expand="true" space-fill="true">
-		  <hbox scrollable="true" hscrollbar-policy="2" vscrollbar-policy="2" space-expand="true" space-fill="true">
-		   <hbox space-expand="false" space-fill="false">
-            <eventbox name="bg_report" space-expand="true" space-fill="true">
-             <vbox margin="5" hscrollbar-policy="2" vscrollbar-policy="2" space-expand="true" space-fill="true">
-              '"`/usr/lib/gtkdialog/xml_pixmap dialog-info.svg 32`"'
-              <text angle="90" wrap="false" yalign="0" use-markup="true" space-expand="true" space-fill="true"><label>"<big><b><span color='"'#15BC15'"'>'$(gettext 'Needed')'</span></b></big> "</label></text>
-            </vbox>
-           </eventbox>
-          </hbox>
-         <vbox scrollable="true" shadow-type="0" hscrollbar-policy="2" vscrollbar-policy="1" space-expand="true" space-fill="true">
-          <text ypad="5" xpad="5" yalign="0" xalign="0" use-markup="true" space-expand="true" space-fill="true"><label>"<i><b>'${NEEDED_PGKS}' </b></i>"</label></text>
-         </vbox>
-        </hbox>
-       </hbox>
-
-       <hbox space-expand="false" space-fill="false">
-        <button>
-         <label>'$(gettext 'View details')'</label>
-         '"`/usr/lib/gtkdialog/xml_button-icon document_viewer`"'
-         <action>defaulttextviewer /tmp/overall_dependencies &</action>
-        </button>
-        <button ok></button>
-        '"`/usr/lib/gtkdialog/xml_scalegrip`"'
-       </hbox>
-      </vbox>
-     </window>'
-     RETPARAMS="`gtkdialog --center -p NEEDED_DIALOG`"
-	fi
-}
-export -f progressbar_info
 
 #tall or wide orientation in the Ziggy UI
 UI_ORIENT="$(cat /var/local/petget/uo_choice 2>/dev/null)"
@@ -535,13 +491,11 @@ S='<window title="'$(gettext 'Puppy Package Manager v')''${VERSION}'" width-requ
           <label>" '$(gettext 'Do it!')' "</label>
           <sensitive>false</sensitive>
           <action condition="command_is_true(if [ \"$(cat /tmp/pkgs_to_install)\" != \"\" ];then echo true;fi)">disable:VBOX_MAIN</action>
-          <action condition="command_is_true(if [ \"$(cat /tmp/pkgs_to_install)\" != \"\" ];then echo true;fi)">disable:DEP_INFO</action>
           <action>if [ "$(cat /tmp/forced_install 2>/dev/null)" != "" ]; then touch /tmp/force_install; else rm -f /tmp/force_install; fi </action>
           <action>cut -d"|" -f1,4 /tmp/pkgs_to_install > /tmp/pkgs_to_install_tmp; mv -f /tmp/pkgs_to_install_tmp /tmp/pkgs_to_install</action>
           <action condition="command_is_true(if [ -f /tmp/force_install -a -f /tmp/install_pets_quietly ]; then echo false; else echo true; fi )">/usr/local/petget/installmodes.sh "$INSTALL_MODE" &</action>
           <action condition="command_is_false(if [ -f /tmp/force_install -a -f /tmp/install_pets_quietly ]; then echo false; else echo true; fi )">installed_warning &</action>
           <action condition="command_is_false(if [ -f /tmp/force_install -a -f /tmp/install_pets_quietly ]; then echo false; else echo true; fi )">enable:VBOX_MAIN</action>
-          <action condition="command_is_false(if [ -f /tmp/force_install -a -f /tmp/install_pets_quietly ]; then echo false; else echo true; fi )">enable:DEP_INFO</action>
         </button>
       </hbox>
     </vbox>
@@ -706,11 +660,9 @@ S='<window title="'$(gettext 'Puppy Package Manager v')''${VERSION}'" width-requ
     <variable>VBOX_MAIN</variable>
   </vbox>
   <hbox space-expand="false" space-fill="false">
-   <eventbox name="dependency_info" space-expand="true" space-fill="true" tooltip-text="'$(gettext 'Click to get a list of the needed dependencies')'">
     <progressbar height-request="25" space-expand="true" space-fill="true">
-      <input>while [ -s /tmp/petget/install_status -a "$(ps aux|grep PPM_GUI|grep gtkdialog|wc -l)" -gt 2 ]; do cat /tmp/petget/install_status_percent; cat /tmp/petget/install_status; sleep 0.5; done</input>
+      <input>while [ -s /tmp/petget/install_status -a "$(ps|grep PPM_GUI|grep gtkdialog|wc -l)" -gt 2 ]; do cat /tmp/petget/install_status_percent; cat /tmp/petget/install_status; sleep 0.5; done</input>
       <action>enable:VBOX_MAIN</action>
-      <action>enable:DEP_INFO</action>
       <action>disable:BUTTON_INSTALL</action>
       <action>rm /tmp/pkgs_to_install</action>
       <action>refresh:TREE_INSTALL</action>
@@ -722,9 +674,6 @@ S='<window title="'$(gettext 'Puppy Package Manager v')''${VERSION}'" width-requ
       <action>echo "" > /tmp/petget/install_status</action>
     </progressbar>
     '"`/usr/lib/gtkdialog/xml_scalegrip`"'
-    <action signal="button-release-event">progressbar_info</action>
-   </eventbox>
-   <variable>DEP_INFO</variable>
   </hbox>
 </vbox>
 <action signal="show">kill -9 '$SPID'</action>
