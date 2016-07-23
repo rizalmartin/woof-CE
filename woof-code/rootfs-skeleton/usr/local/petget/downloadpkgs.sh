@@ -27,6 +27,7 @@
 #121123 first test that all pkgs exist online before downloading any.
 #121130 fix 121123.
 
+
 [ "$(cat /var/local/petget/nt_category 2>/dev/null)" != "true" ] && \
  [ -f /tmp/install_quietly ] && set -x
  #; mkdir -p /tmp/PPM_LOGs ; NAME=$(basename "$0"); exec 1>> /tmp/PPM_LOGs/"$NAME".log 2>&1
@@ -123,10 +124,11 @@ do
   <text use-markup=\"true\"><label>\"<b>${PKGNAMES}</b>\"</label></text>
  </vbox>
  <text><label>$(gettext "Please choose which URL you would like to download them from. Choose 'LOCAL FOLDER' if you have already have them on this computer (on hard drive, USB drive or CD):")</label></text>
-
  <frame ${LISTNAMECUT}>
+ <vbox scrollable=\"true\" shadow-type=\"0\" hscrollbar-policy=\"2\" space-expand=\"true\" space-fill=\"true\">
   ${REPOBUTTONS}
   <radiobutton><label>$(gettext 'LOCAL FOLDER')</label><variable>RADIO_URL_LOCAL</variable></radiobutton>
+  </vbox>
  </frame>
  
  <hbox>
@@ -159,28 +161,36 @@ do
  #if [ "$RADIO_URL_LOCAL" = "true" ];then
  if [ "`echo "$RETPARAMS" | grep 'RADIO_URL_LOCAL' | grep 'true'`" != "" ];then
   #put up a dlg box asking for folder with pkgs...
+  
   LOCALDIR="/root"
+  
   if [ -s /var/log/petlocaldir ];then
    OLDLOCALDIR="`cat /var/log/petlocaldir`"
    [ -d $OLDLOCALDIR ] && LOCALDIR="$OLDLOCALDIR"
   fi
+  
   LOCALDIR="`Xdialog --backtitle "Note: Files not displayed, only directories" --title "Choose local directory" --stdout --no-buttons --dselect "$LOCALDIR" 0 0`"
+  
   [ $? -ne 0 ] && exit 1
+  
   if [ "$LOCALDIR" != "" ];then #121130
    LOCALDIR="$(echo -n "$LOCALDIR" | sed -e 's%/$%%')" #drop / off the end.
    echo "$LOCALDIR" > /var/log/petlocaldir
   else
    exit 1
   fi
+  
   DOWNLOADFROM="file://${LOCALDIR}"
+ 
  else
-  if [ ! -f /tmp/install_quietly ]; then
-   URL_BASIC="`echo "$RETPARAMS" | grep 'RADIO_URL_' | grep '"true"' | cut -f 1 -d '=' | cut -f 3 -d '_'`"
-   DOWNLOADFROM="`cat /tmp/petget_repos | grep "$URL_BASIC" | head -n 1 | cut -f 2 -d '|'`"
-  else
-   DOWNLOADFROM="`awk '{ if (NR==1) print $0 }' /tmp/petget_repos | cut -f 2 -d '|'`"
-   DOWNLOADFROM_ALT="`awk '{ if (NR==2) print $0 }' /tmp/petget_repos | cut -f 2 -d '|'`"
-  fi
+	  if [ ! -f /tmp/install_quietly ]; then
+	   URL_BASIC="`echo "$RETPARAMS" | grep 'RADIO_URL_' | grep '"true"' | cut -f 1 -d '=' | cut -f 3 -d '_'`"
+	   DOWNLOADFROM="`cat /tmp/petget_repos | grep "$URL_BASIC" | head -n 1 | cut -f 2 -d '|'`"
+	  else
+		DOWNLOADFROM=""
+	   #DOWNLOADFROM="`awk '{ if (NR==1) print $0 }' /tmp/petget_repos | cut -f 2 -d '|'`"
+	   #DOWNLOADFROM_ALT="`awk '{ if (NR==2) print $0 }' /tmp/petget_repos | cut -f 2 -d '|'`"
+	  fi
  fi
  
  #now download and install them...
@@ -194,6 +204,7 @@ do
   echo "$(gettext 'Testing that packages exist in repository')" > /tmp/petget/install_status
  fi
  DL_BAD_LIST=''
+ 
  for ONEFILE in `cat $ONELIST | cut -f 7,8,13 -d '|'` #path|fullfilename|repo-id
  do
   ONEREPOID="`echo -n "$ONEFILE" | cut -f 3 -d '|'`" #ex: official (...|puppy|wary5|official|)
@@ -206,30 +217,47 @@ do
     [ ! -f ./${ONEPKGNAME} ] && DL_BAD_LIST="${DL_BAD_LIST} ${ONEPKGNAME}"
    fi
   else
-   if [ "$ONEPATH" == "" ];then
-    if [ "$FLAGPET" != "yes" ];then
-     ONEFILE="compat_packages-${REPO_DEFAULT_SUBSUBDIR}${ONEFILE}"
-    else
-     ONEFILE="pet_packages-${REPO_DEFAULT_SUBSUBDIR}${ONEFILE}"
-    fi
-   fi
-   if [ ! -f /tmp/install_quietly ]; then
-    LANG=C wget -4 -t 2 -T 20 --waitretry=20 --spider -S "${DOWNLOADFROM}/${ONEFILE}" > /tmp/download_file_spider.log0 2>&1 #
-    if [ $? -ne 0 ];then
-     DL_BAD_LIST="${DL_BAD_LIST} ${ONEPKGNAME}"
-    fi
-   else
-    LANG=C wget -4 -t 2 -T 20 --waitretry=20 --spider -S "${DOWNLOADFROM}/${ONEFILE}" > /tmp/download_file_spider.log0 2>&1 #
-    if [ $? -ne 0 ];then
-     DOWNLOADFROM="${DOWNLOADFROM_ALT}"
-     LANG=C wget -4 -t 2 -T 20 --waitretry=20 --spider -S "${DOWNLOADFROM}/${ONEFILE}" > /tmp/download_file_spider.log0 2>&1 
-     if [ $? -ne 0 ];then
-      DL_BAD_LIST="${DL_BAD_LIST} ${ONEPKGNAME}"
-     fi
-    fi
-   fi
+	   if [ "$ONEPATH" == "" ];then
+		if [ "$FLAGPET" != "yes" ];then
+		 ONEFILE="compat_packages-${REPO_DEFAULT_SUBSUBDIR}${ONEFILE}"
+		else
+		 ONEFILE="pet_packages-${REPO_DEFAULT_SUBSUBDIR}${ONEFILE}"
+		fi
+	   fi
+	   
+	   if [ ! -f /tmp/install_quietly ]; then
+		LANG=C wget -4 -t 2 -T 20 --waitretry=20 --spider -S "${DOWNLOADFROM}/${ONEFILE}" > /tmp/download_file_spider.log0 2>&1 #
+			if [ $? -ne 0 ]; then
+			 echo "${DOWNLOADFROM}/${ONEFILE}" >> /root/result1.txt
+			 DL_BAD_LIST="${DL_BAD_LIST} ${ONEPKGNAME}"
+			fi
+	   else
+	   
+		   PKGFOUND=0
+		   
+		   for line1 in `cat /tmp/petget_repos`
+		   do
+		   
+			if [ $PKGFOUND -eq 0 ]; then
+				URL_PATH="`echo -n "$line1" | cut -f 2 -d '|'`"   
+				LANG=C wget -4 -t 2 -T 20 --waitretry=20 --spider -S "${URL_PATH}/${ONEFILE}" > /tmp/download_file_spider.log0 2>&1 #
+				
+				if [ $? -eq 0 ]; then
+				 PKGFOUND=1
+				 DOWNLOADFROM="${URL_PATH}"
+				fi		
+			fi
+			
+			done
+		   
+		   if [ $PKGFOUND -eq 0 ]; then
+			  DL_BAD_LIST="${DL_BAD_LIST} ${ONEPKGNAME}"
+		   fi
+	   
+	   fi
   fi 
  done
+ 
  [ ! -f /tmp/install_quietly ] && pupkill $testPID || echo
  if [ "$DL_BAD_LIST" ];then
   BADMSG1="$(gettext 'Unfortunately, these packages are not available:')"
@@ -427,7 +455,7 @@ fi
   elPATTERN="`echo -n "$ENTRY_LOCALE" | tr ',' '\n' | sed -e 's%^%/%' -e 's%$%/%' | tr '\n' '|'`"
   for PKGNAME in $INSTALLEDPKGNAMES
   do
-   cat /root/.packages/${PKGNAME}.files |
+   cat /root/.packages/package-files/${PKGNAME}.files |
    while read ONEFILE
    do
     [ ! -f "$ONEFILE" ] && continue
@@ -436,8 +464,8 @@ fi
     if [ "$ENTRY_LOCALE" != "" ];then
      if [ "`echo -n "$ONEFILE" | grep --extended-regexp '/locale/|/nls/|/i18n/' | grep -v -E "$elPATTERN"`" != "" ];then
       rm -f "$ONEFILE"
-      grep -v "$ONEFILE" /root/.packages/${PKGNAME}.files > /tmp/petget_pkgfiles_temp
-      mv -f /tmp/petget_pkgfiles_temp /root/.packages/${PKGNAME}.files
+      grep -v "$ONEFILE" /root/.packages/package-files/${PKGNAME}.files > /tmp/petget_pkgfiles_temp
+      mv -f /tmp/petget_pkgfiles_temp /root/.packages/package-files/${PKGNAME}.files
       continue
      fi
     fi
@@ -445,8 +473,8 @@ fi
     if [ "$CHECK_DOCDEL" = "true" ];then
      if [ "`echo -n "$ONEFILE" | grep --extended-regexp '/man/|/doc/|/doc-base/|/docs/|/info/|/gtk-doc/|/faq/|/manual/|/examples/|/help/|/htdocs/'`" != "" ];then
       rm -f "$ONEFILE" 2>/dev/null
-      grep -v "$ONEFILE" /root/.packages/${PKGNAME}.files > /tmp/petget_pkgfiles_temp
-      mv -f /tmp/petget_pkgfiles_temp /root/.packages/${PKGNAME}.files
+      grep -v "$ONEFILE" /root/.packages/package-files/${PKGNAME}.files > /tmp/petget_pkgfiles_temp
+      mv -f /tmp/petget_pkgfiles_temp /root/.packages/package-files/${PKGNAME}.files
       continue
      fi
     fi
@@ -454,15 +482,15 @@ fi
     if [ "$CHECK_DEVDEL" = "true" ];then
      if [ "`echo -n "$ONEFILE" | grep --extended-regexp '/include/|/pkgconfig/|/aclocal|/cvs/|/svn/'`" != "" ];then
       rm -f "$ONEFILE" 2>/dev/null
-      grep -v "$ONEFILE" /root/.packages/${PKGNAME}.files > /tmp/petget_pkgfiles_temp
-      mv -f /tmp/petget_pkgfiles_temp /root/.packages/${PKGNAME}.files
+      grep -v "$ONEFILE" /root/.packages/package-files/${PKGNAME}.files > /tmp/petget_pkgfiles_temp
+      mv -f /tmp/petget_pkgfiles_temp /root/.packages/package-files/${PKGNAME}.files
       continue
      fi
      #all .a and .la files... and any stray .m4 files...
      if [ "`echo -n "$ONEBASE" | grep --extended-regexp '\.a$|\.la$|\.m4$'`" != "" ];then
       rm -f "$ONEFILE"
-      grep -v "$ONEFILE" /root/.packages/${PKGNAME}.files > /tmp/petget_pkgfiles_temp
-      mv -f /tmp/petget_pkgfiles_temp /root/.packages/${PKGNAME}.files
+      grep -v "$ONEFILE" /root/.packages/package-files/${PKGNAME}.files > /tmp/petget_pkgfiles_temp
+      mv -f /tmp/petget_pkgfiles_temp /root/.packages/package-files/${PKGNAME}.files
      fi
     fi
    done
