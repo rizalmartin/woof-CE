@@ -87,13 +87,13 @@ do
  #120811 need category field (#5), and subcategory part of it...
  #120504 Mavrothal:
  if [ "$entryPATTERN4" != "" ]; then
-  FNDENTRIES="`cat /root/.packages/Packages-${ONEREPO} | cut -f1,2,3,5,10 -d \| | grep -i "$entryPATTERN1" | grep -i "$entryPATTERN2" | grep -i "$entryPATTERN3" | grep -i "$entryPATTERN4"`" #120827
+  FNDENTRIES="`cat /root/.packages/repo/Packages-${ONEREPO} | cut -f1,2,3,5,10 -d \| | grep -i "$entryPATTERN1" | grep -i "$entryPATTERN2" | grep -i "$entryPATTERN3" | grep -i "$entryPATTERN4"`" #120827
  elif [ "$entryPATTERN3" != "" ]; then
-  FNDENTRIES="`cat /root/.packages/Packages-${ONEREPO} | cut -f1,2,3,5,10 -d \| | grep -i "$entryPATTERN1" | grep -i "$entryPATTERN2" | grep -i "$entryPATTERN3"`" #120827
+  FNDENTRIES="`cat /root/.packages/repo/Packages-${ONEREPO} | cut -f1,2,3,5,10 -d \| | grep -i "$entryPATTERN1" | grep -i "$entryPATTERN2" | grep -i "$entryPATTERN3"`" #120827
  elif [ "$entryPATTERN2" != "" ]; then
-  FNDENTRIES="`cat /root/.packages/Packages-${ONEREPO} | cut -f1,2,3,5,10 -d \| | grep -i "$entryPATTERN1" | grep -i "$entryPATTERN2"`" #120827
+  FNDENTRIES="`cat /root/.packages/repo/Packages-${ONEREPO} | cut -f1,2,3,5,10 -d \| | grep -i "$entryPATTERN1" | grep -i "$entryPATTERN2"`" #120827
  else
-  FNDENTRIES="`cat /root/.packages/Packages-${ONEREPO} | cut -f1,2,3,5,10 -d \| | grep -i "$entryPATTERN1"`" #120827
+  FNDENTRIES="`cat /root/.packages/repo/Packages-${ONEREPO} | cut -f1,2,3,5,10 -d \| | grep -i "$entryPATTERN1"`" #120827
  fi
 
  if [ "$FNDENTRIES" ];then
