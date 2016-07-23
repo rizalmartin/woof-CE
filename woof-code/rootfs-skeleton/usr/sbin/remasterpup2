@@ -41,7 +41,7 @@
 #120329 Xdialog bug --yesno supposed to "yes" "No" buttons, but they are "OK" "Cancel".
 #120512 01micko: support xz compression.
 #120605 rerwin: omit /dev/snd content, /dev/.udev subdirectory and modem daemons from new master (because daemons reinstalled from firmware if needed).
-#120606 rerwin: support users' replacement of stripped /root & /etc with complete directories (for "boot disk").
+#120606 rerwin: support users' replacement of stripped /root & /etc with complete directories (for "boot disk"). 
 #120607 rerwin: Remove indicators/files for integrated user-installed packages.
 #120628 shinobar: no change id-string for reuse
 #120721 revert 'wildcards' option (from 120605); improve /dev/snd file exclusion; exclude /usr/share/icons/hicolor/icon-theme.cache (shinobar).
@@ -101,11 +101,11 @@ $MSG" 0 80
   SELECTIONS="$FILT_SELECTIONS"
   if [ -z "$SELECTIONS" ];then
    m_14_3="$(gettext 'Puppy live-CD or virtual CD was not found.')
-$(eval_gettext "(No CD or .iso file has both 'initrd.gz' and '${PUPPYSFS}'.)")"
+$(eval_gettext "(No CD or .iso file has both 'initrd.gz' and '${PUPPYSFS}'.)")"  
    Xdialog --wrap --left  --title "$m_01: $m_02" --msgbox "$m_14_3" 0 0
    exit
   fi
- fi #130308 end of filter
+ fi #130308 end of filter 
  m_14_1="$(gettext 'Choose the CD/DVD drive...')"
  DIALOG="Xdialog --wrap --left --title \"$m_01\" --stdout --menubox \"$MSG\n\n$m_14_1\" 0 56 4 $SELECTIONS 2> /dev/null"
  BURNERDRV=""
@@ -141,7 +141,7 @@ COPTIONS=""${COMP}" "${AOPT}""
 . /etc/DISTRO_SPECS
 if [ ! "$DISTRO_IDSTRING" ];then #101107
   #need some stuff in here if want to support older puppies. maybe also more fixes needed further down.
- /usr/lib/gtkdialog/box_ok "$(gettext 'Puppy Remaster')" error "Sorry, your Puppy is too old for this script"
+ pupmessage -bg red -title "RemasterPup" -center "Sorry, your Puppy is too old for this script"
  exit
 else
  PUPPYSFS="$DISTRO_PUPPYSFS" #ex: puppy.sfs
@@ -176,7 +176,7 @@ $(eval_gettext 'Note, I have not tried it, but if you setup the situation of ${P
 $(gettext 'You will also need a current live-CD, as the program gets files off it.')
 $(gettext 'Anyone want to try it?')
 
-$(gettext "Click 'Ok' button to quit...")"
+$(gettext "Click 'Ok' button to quit...")" 
  Xdialog --wrap --left --title "m_01: m_02"  --msgbox "$m_03" 0 80
  exit
 fi
@@ -200,7 +200,8 @@ Xdialog --wrap --left --title "$m_01" --msgbox "$m_05" 0 80
 #calc size needed...
 m_06="$(gettext 'Calculating needed working space.')
 $(gettext 'Please wait, this may take awhile...')"
-Xdialog --wrap --left  --title "$m_01" --no-buttons --ignore-eof  --infobox "$m_06" 0 0 0 &
+#Xdialog --wrap --left  --title "$m_01" --no-buttons --ignore-eof  --infobox "$m_06" 0 0 0 &
+/usr/lib/gtkdialog/box_splash -close never -text "$m_06" &
 XPID=$!
 SIZEOPT=0
 SIZEBIN=`du -sk /bin | cut -f 1`
@@ -300,7 +301,7 @@ echo "WKGPART=$WKGPART"
 #firstly need working place to write to...
 [ "$WKGPART" = "ramdisk" ] && WKGMNTPT="/"
 WPATTERN="/dev/$WKGPART "
-[ "$WKGMNTPT" = "" ] && WKGMNTPT="`mount | grep "$WPATTERN" | head -n 1 | tr -s " " | cut -f 3 -d " "`"
+[ "$WKGMNTPT" = "" ] && WKGMNTPT="`mount | grep "$WPATTERN" | tr -s " " | cut -f 3 -d " "`"
 if [ "$WKGMNTPT" = "" ];then
  PPATTERN="^$WKGPART "
  WKGFS="`echo "$SCHOICES" | grep "$PPATTERN" | cut -f 2 -d ':' | cut -f 2 -d " "`"
@@ -383,7 +384,7 @@ done
 m_14="$(gettext 'This remaster program needs to read some files off the current live-CD.')
 $(gettext 'You can also use a .iso file if it is already mounted as a virtual CD (you would need to have previously clicked on a .iso file to mount it).')"
 MSG="$m_14"
-choice_cdd filter #130308 Use filtering.
+choice_cdd filter #130308 Use filtering. 
 
 CDPATTERN="/dev/$BURNERDRV "
 CDMNTPT="`mount | grep "$CDPATTERN" | tr -s " " | cut -f 3 -d " "`"
@@ -395,7 +396,7 @@ if [ "$CDMNTPT" != "" ];then
   sync
   umount /dev/$BURNERDRV 2> /dev/null
   if [ $? -ne 0 ];then
-   m_15="$(gettext 'Mounted CD, get rid of it before running this program!')"
+   m_15="$(gettext 'Mounted CD, get rid of it before running this program!')" 
    Xdialog --wrap --left  --title "$m_02" --msgbox "$m_15" 0 0
    exit
   fi
@@ -419,7 +420,8 @@ fi
 
 #now get the files off it...
 m_17="$(eval_gettext 'Copying files from CD to ${WKGMNTPT}/puppylivecdbuild/, please wait...')"
-Xdialog --wrap --left  --title "$m_01" --no-buttons --ignore-eof   --infobox "$m_17" 0 0 0 &
+#Xdialog --wrap --left  --title "$m_01" --no-buttons --ignore-eof   --infobox "$m_17" 0 0 0 &
+/usr/lib/gtkdialog/box_splash -close never -text "$m_17" &
 XPID=$!
 mkdir -p $WKGMNTPT/puppylivecdbuild
 #now copy the files... # v431JP HTM, ICO, INF
@@ -427,8 +429,8 @@ mkdir -p $WKGMNTPT/puppylivecdbuild
    for F in vmlinuz initrd.gz ${ZDRVSFS} grldr menu.lst '*.xpm' isolinux.bin isolinux.cfg '*.msg' '*.16' '*.HTM*' '*.ICO' '*.INF'
    do
     #130223 -n means do not override an existing file... 130304 hmmm, -n not supported, use -u ...
-    cp -a -u $CDMNTPT/$F $WKGMNTPT/puppylivecdbuild/ 2> /dev/null
-    sync
+	cp -a -u $CDMNTPT/$F $WKGMNTPT/puppylivecdbuild/ 2> /dev/null
+	sync
    done
 umount /dev/$BURNERDRV 2> /dev/null
 rox -D $CDMNTPT #130223
@@ -445,13 +447,14 @@ m_18="$(eval_gettext 'Creating the ${PUPPYSFS} file in ${WKGMNTPT}/puppylivecdbu
 $(gettext 'This can take quite a long time, so please wait.... and wait...')
 $(eval_gettext 'This window will disappear when ${PUPPYSFS} is finally created.')
 $(gettext 'Please wait...')"
-Xdialog --wrap --left  --title "$m_01" --no-buttons --ignore-eof   --infobox "$m_18" 0 0 0 &
+#Xdialog --wrap --left  --title "$m_01" --no-buttons --ignore-eof   --infobox "$m_18" 0 0 0 &
+/usr/lib/gtkdialog/box_splash -close never -text "$m_18" &
 XPID=$!
 
 #create new puppy.sfs file...
 squash() {
-    echo $0 $@
-    rxvt -bg orange -fg black -title "$m_01" -geometry 80x6 -e mksquashfs $@ 2> /dev/null
+	echo $0 $@
+	rxvt -bg blue -fg white -title "Processing Puppy SFS... DO NOT CLOSE" -geometry 80x6+50+50 -e mksquashfs $@ 2> /dev/null
 }
 DIRHOME=""
 [ -d /home ] && DIRHOME="/home"
@@ -467,7 +470,7 @@ sync
 ANOTHER_REMOVE="/lib/modules/$KERNELVER/initrd /lib/modules/*/modules.*"	# 28dec09 modules.*
 if [ "$MKZDRV" = "yes" ]; then
   rm -f $WKGMNTPT/puppylivecdbuild/$ZDRVSFS 2> /dev/null
-  mksquashfs /lib $WKGMNTPT/puppylivecdbuild/$ZDRVSFS -keep-as-directory -e /lib/[^m]* $ANOTHER_REMOVE
+  rxvt -bg blue -fg white -title "Processing ZDRV... DO NOT CLOSE" -geometry 80x6+50+50 -e mksquashfs /lib $WKGMNTPT/puppylivecdbuild/$ZDRVSFS -keep-as-directory -e /lib/[^m]* $ANOTHER_REMOVE
   ANOTHER_REMOVE="/lib/modules"
 fi
 #120605 Omit certain /dev subdir content and modem components loaded from firmware tarballs...
@@ -495,8 +498,47 @@ kill $XPID
 
 #######START WORKING ON /root#######
 rm -rf /tmp/root 2> /dev/null
+
 #do some work on /root before add it to the squashfs...
 cp -a /initrd${PUP_LAYER}/root /tmp/root #pristine /root
+
+rm -f /tmp/root/.packages/builtin_files/*
+cp -af /root/.packages/builtin_files/* /tmp/root/.packages/builtin_files/
+rm -rf /tmp/root/.thumbnails/normal/*
+
+# For modified PPM
+
+if [ ! -f /tmp/root/.packages/petget-mod-notes ] && [ -f /root/.packages/petget-mod-notes ]; then
+	
+	if [ -d /root/.packages/repo ] && [ ! -d /tmp/root/.packages/repo ]; then
+	mkdir /tmp/root/.packages/repo
+	cp -af /root/.packages/repo/* /tmp/root/.packages/repo/
+	fi
+	
+	if [ -d /root/.packages/database ] && [ ! -d /root/.packages/database ]; then
+	mkdir /tmp/root/.packages/database
+	cp -af /root/.packages/database/* /tmp/root/.packages/database/
+	fi
+
+	if [ -d /root/.packages/downloaded-pkg ] && [ ! -d /tmp/root/.packages/downloaded-pkg ]; then
+	mkdir /tmp/root/.packages/downloaded-pkg
+	fi
+
+	if [ -d /root/.packages/system-app-files ] && [ ! -d /tmp/root/.packages/system-app-files ]; then
+	mkdir /tmp/root/.packages/system-app-files
+	fi
+
+	if [ -d /root/.packages/remove-script ] && [ ! -d /root/.packages/remove-script ]; then
+	mkdir /tmp/root/.packages/remove-script
+	fi
+	
+	rm -f /tmp/root/.packages/Packages-*
+	rm -f /tmp/root/.packages/*.files
+	rm -f /tmp/root/.packages/*.remove
+
+fi
+
+
 #copy all of my-applications/
 cp -af /root/my-applications/* /tmp/root/my-applications/
 #some dotpups get installed here...
@@ -510,15 +552,41 @@ cp -af /root/.icewm/menu /tmp/root/.icewm/
 cp -af /root/Choices/ROX-Filer/PuppyPin /tmp/root/Choices/ROX-Filer/
 cp -af /root/Choices/ROX-Filer/globicons /tmp/root/Choices/ROX-Filer/
 #100117 user changes get saved here, which overrides original...
-if [ -f /root/.config/rox.sourceforge.net/ROX-Filer/globicons ];then
- mkdir -p /tmp/root/.config/rox.sourceforge.net/ROX-Filer/
- cp -af /root/.config/rox.sourceforge.net/ROX-Filer/globicons /tmp/root/.config/rox.sourceforge.net/ROX-Filer/
+
+#100117 save xfce settings
+if [ ! -d /tmp/root/.config ];then
+ mkdir -p /tmp/root/.config
 fi
-#100117 i think also save user settings...
-if [ -f /root/.config/rox.sourceforge.net/ROX-Filer/Options ];then
- mkdir -p /tmp/root/.config/rox.sourceforge.net/ROX-Filer/
- cp -af /root/.config/rox.sourceforge.net/ROX-Filer/Options /tmp/root/.config/rox.sourceforge.net/ROX-Filer/
+
+cp -R /root/.config/* /tmp/root/.config
+
+if [ -f /tmp/root/.config/xfce4/xfconf/xfce-perchannel-xml/displays.xml ];then
+ rm /tmp/root/.config/xfce4/xfconf/xfce-perchannel-xml/displays.xml
 fi
+
+if [ -f /root/.face ];then
+ cp /root/.face /tmp/root/.face
+fi
+
+if [ -f /root/Startup/zram ];then
+ cp /root/Startup/zram /tmp/root/Startup/zram
+fi
+
+if [ ! -d /tmp/root/.local ];then
+ mkdir /tmp/root/.local
+fi
+
+if [ ! -d /tmp/root/.local/share ];then
+ mkdir /tmp/root/.local/share
+fi
+
+if [ ! -d /tmp/root/.local/share/applications ];then
+ mkdir /tmp/root/.local/share/applications
+fi
+
+cp -R /root/.local/share/applications/* /tmp/root/.local/share/applications
+
+
 #v411 tidy up, remove desktop drive icons...
 grep -v '/root/.pup_event/drive_' /tmp/root/Choices/ROX-Filer/PuppyPin > /tmp/remaster-PuppyPin
 mv -f /tmp/remaster-PuppyPin /tmp/root/Choices/ROX-Filer/PuppyPin
@@ -531,6 +599,7 @@ cp -af /root/.xinitrc /tmp/root/
 cp -af /root/.gtkrc-2.0 /tmp/root/
 
 #v411 jwm theme may have changed...
+cp -af /root/.jwm/jwm_colors /tmp/root/.jwm/
 cp -af /root/.jwm/jwmrc-personal /tmp/root/.jwm/
 cp -af /root/.jwm/jwmrc-personal2 /tmp/root/.jwm/
 cp -af /root/.jwm/jwmrc-theme /tmp/root/.jwm/
@@ -545,18 +614,17 @@ cp -af /root/.pmountsingle /tmp/root/
 
 #.packages/ .files, copy any files installed to /root...
 echo -n "" > /tmp/allpkgs.files
-for ONEPKG in `ls -1 /root/.packages/*.files 2>/dev/null | tr "\n" " "`
+for ONEPKG in `ls -1 /root/.packages/package-files/*.files 2>/dev/null | tr "\n" " "`
 do
- grep '^/root/' $ONEPKG | while read -r ONEFILE
+ for ONEFILE in `cat $ONEPKG | grep '^/root/' | tr "\n" " "`
  do
-  if [ -d "$ONEFILE" ] && [ ! -L "$ONEFILE" ];then #w018
-   mkdir -p "/tmp${ONEFILE}"
+  if [ -d $ONEFILE ];then #w018
+   mkdir -p /tmp$ONEFILE
   fi
-  if [ -f "$ONEFILE" ] || [ -L "$ONEFILE" ];then #w018
-   DIRNAME="`dirname "$ONEFILE"`"
-   mkdir -p "/tmp${DIRNAME}"
-   rm -f "/tmp${ONEFILE}" # if ONEFILE already exists and it's a link, needs to be removed
-   cp -a -f "$ONEFILE" "/tmp${DIRNAME}/"
+  if [ -f $ONEFILE ];then #w018
+   DIRNAME="`dirname $ONEFILE`"
+   mkdir -p /tmp$DIRNAME
+   cp -a -f $ONEFILE /tmp$DIRNAME/
   fi
  done
 done
@@ -565,19 +633,21 @@ done
 #modify /root/.packages/ files, as all installed packages are now part of the new cd...
 cp -a -f /root/.packages /tmp/root/
 touch /root/.packages/user-installed-packages
-# 141008: move *.files to ~/.packages/builtin_files/
-cat /root/.packages/user-installed-packages | while read -r ONEPKG; do
-  ONEFILE="/tmp/root/.packages/`echo "$ONEPKG" | cut -f1 -d '|'`.files"
-  ONENAME="/tmp/root/.packages/builtin_files/`echo "$ONEPKG" | cut -f2 -d '|'`"
-  mv -f "$ONEFILE" "$ONENAME"
-done
 cat /root/.packages/user-installed-packages >> /tmp/root/.packages/woof-installed-packages
 sort -u --key=1 --field-separator="|" /tmp/root/.packages/woof-installed-packages > /tmp/woof-installed-packages-tmp #110722
 mv -f /tmp/woof-installed-packages-tmp /tmp/root/.packages/woof-installed-packages
 echo -n "" > /tmp/root/.packages/user-installed-packages #v431
+
+#Convert package .files to builtin files
+for ONEPKG in `ls -1 /root/.packages/package-files/*.files 2>/dev/null | tr "\n" " "`
+do
+ conv1 $ONEPKG /tmp/root/.packages/builtin_files/
+done
+
 sync #120607
-rm -f /tmp/root/.packages/*.files #120607
-rm -f /tmp/root/.packages/*.remove #120607
+#mv -f /tmp/root/.packages/package-files/*.files /tmp/root/.packages/system-app-files #120607
+rm -f /tmp/root/.packages/package-files/*.files
+rm -f /tmp/root/.packages/remove-script/*.remove #120607
 
 [ -f /tmp/root/.XLOADED ] && rm -f /tmp/root/.XLOADED #130527
 
@@ -588,8 +658,8 @@ $(gettext '(if you think that this program has missed out something important th
 $(eval_gettext "After examining /tmp/root, click 'Ok' to add /root in \${PUPPYSFS} file...")"
 Xdialog --wrap --left --title "$m_01" --msgbox "$m_19" 0 80
 sync
-[ "`ls /tmp/root/.packages/*.files`" = "" ] && CLEARPKGLOG="yes" || CLEARPKGLOG="no" #120607 in case user copied entire /root to /tmp for boot disk.
-mksquashfs /tmp/root $WKGMNTPT/puppylivecdbuild/$PUPPYSFS -keep-as-directory
+[ "`ls /tmp/root/.packages/package-files/*.files`" = "" ] && CLEARPKGLOG="yes" || CLEARPKGLOG="no" #120607 in case user copied entire /root to /tmp for boot disk.
+rxvt -bg blue -fg white -title "Processing ROOT... DO NOT CLOSE" -geometry 80x6+50+50 -e mksquashfs /tmp/root $WKGMNTPT/puppylivecdbuild/$PUPPYSFS -keep-as-directory
 sync
 rm -rf /tmp/root
 #######END WORKING ON /root#######
@@ -603,18 +673,17 @@ cp -af /etc/ld.so.conf /tmp/etc/
 
 #.packages/ .files, copy any files installed to /etc...
 echo -n "" > /tmp/allpkgs.files
-for ONEPKG in `ls -1 /root/.packages/*.files 2>/dev/null | tr "\n" " "`
+for ONEPKG in `ls -1 /root/.packages/package-files/*.files 2>/dev/null | tr "\n" " "`
 do
- grep '^/etc/' $ONEPKG | while read -r ONEFILE
+ for ONEFILE in `cat $ONEPKG | grep '^/etc/' | tr "\n" " "`
  do
-  if [ -d "$ONEFILE" ] && [ ! -L "$ONEFILE" ];then #w018
-   mkdir -p "/tmp${ONEFILE}"
+  if [ -d $ONEFILE ];then #w018
+   mkdir -p /tmp$ONEFILE
   fi
-  if [ -f "$ONEFILE" ] || [ -L "$ONEFILE" ];then #w018
-   DIRNAME="`dirname "$ONEFILE"`"
-   mkdir -p "/tmp${DIRNAME}"
-   rm -f "/tmp${ONEFILE}" # if ONEFILE already exists and it's a link, needs to be removed
-   cp -a -f "$ONEFILE" "/tmp${DIRNAME}/"
+  if [ -f $ONEFILE ];then #w018
+   DIRNAME="`dirname $ONEFILE`"
+   mkdir -p /tmp$DIRNAME
+   cp -a -f $ONEFILE /tmp$DIRNAME/
   fi
  done
 done
@@ -667,6 +736,21 @@ fi
 
 #some files to always copy...
 cp -af /etc/Puppybackgroundpicture /tmp/etc/
+
+#copy udev rules...
+cp -af /etc/udev/rules.d/* /tmp/etc/udev/rules.d/
+rm -f /tmp/etc/udev/rules.d/*persistent*.rules
+	
+if [ ! -d /tmp/etc/init.d ]; then
+mkdir /tmp/etc/init.d
+fi
+
+if [ -f /etc/init.d/zramswap ];then
+ cp /etc/init.d/zramswap /tmp/etc/init.d/
+fi
+
+
+
 #TODO: other gtk and jwm customisations.
 
 #100913 fix id-string variable...
@@ -696,9 +780,7 @@ fi
 [ -f /tmp/etc/.XLOADED ] && rm -f /tmp/etc/.XLOADED #130527 just in case old file still there.
 
 sync
-
-
-mksquashfs /tmp/etc $WKGMNTPT/puppylivecdbuild/$PUPPYSFS -keep-as-directory
+rxvt -bg blue -fg white -title "Processing ETC... DO NOT CLOSE" -geometry 80x6+50+50 -e mksquashfs /tmp/etc $WKGMNTPT/puppylivecdbuild/$PUPPYSFS -keep-as-directory
 sync
 rm -rf /tmp/etc
 #######END WORKING ON /etc#######
@@ -709,18 +791,17 @@ cp -a /initrd${PUP_LAYER}/var /tmp/var #pristine var
 
 #.packages/ .files, copy any files installed to /var...
 echo -n "" > /tmp/allpkgs.files
-for ONEPKG in `ls -1 /root/.packages/*.files 2>/dev/null | tr "\n" " "`
+for ONEPKG in `ls -1 /root/.packages/package-files/*.files 2>/dev/null | tr "\n" " "`
 do
- grep '^/var/' $ONEPKG | while read -r ONEFILE
+ for ONEFILE in `cat $ONEPKG | grep '^/var/' | tr "\n" " "`
  do
-  if [ -d "$ONEFILE" ] && [ ! -L "$ONEFILE" ];then #w018
-   mkdir -p "/tmp${ONEFILE}"
+  if [ -d $ONEFILE ];then #w018
+   mkdir -p /tmp$ONEFILE
   fi
-  if [ -f "$ONEFILE" ] || [ -L "$ONEFILE" ];then #w018
-   DIRNAME="`dirname "$ONEFILE"`"
-   mkdir -p "/tmp${DIRNAME}"
-   rm -f "/tmp${ONEFILE}" # if ONEFILE already exists and it's a link, needs to be removed
-   cp -a -f "$ONEFILE" "/tmp${DIRNAME}/"
+  if [ -f $ONEFILE ];then #w018
+   DIRNAME="`dirname $ONEFILE`"
+   mkdir -p /tmp$DIRNAME
+   cp -a -f $ONEFILE /tmp$DIRNAME/
   fi
  done
 done
