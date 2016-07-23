@@ -25,9 +25,9 @@ export OUTPUT_CHARSET=UTF-8
 
 #find what repos are currently in use... 120510...
 CHECKBOXES_REPOS=""
-#for ONEREPO in `ls -1 /root/.packages/Packages-*`
+#for ONEREPO in `ls -1 /root/.packages/repo/Packages-*`
 #120510 bugfix with ui_Ziggy. add CHECKBOX_MAIN_REPO var to gui
-MAIN_REPO="`ls -1 /root/.packages/Packages-* | grep "puppy\-${DISTRO_DB_SUBNAME}\-" | head -n 1 | sed 's%^/root/.packages/%%'`" #121102 121129
+MAIN_REPO="`ls -1 /root/.packages/repo/Packages-* | grep "puppy\-${DISTRO_DB_SUBNAME}\-" | head -n 1 | sed 's%^/root/.packages/repo/%%'`" #121102 121129
 #120515 hmmm, in some cases, Packages-puppy-${DISTRO_FILE_PREFIX}-* may not exist (ex, Racy only has Packages-puppy-wary5-official)...
 #121102 ...now using DISTRO_DB_SUBNAME, should always exist.
 [ "$MAIN_REPO" = "" ] && MAIN_REPO="`echo "$PACKAGELISTS_PET_ORDER" | tr ' ' '\n' | head -n 1`" #PACKAGELISTS_PET_ORDER is in /root/.packages/DISTRO_PET_REPOS.
@@ -36,7 +36,7 @@ bMAIN_PATTERN=' '"$MAIN_REPO"' '
 MAIN_DBNAME="`echo -n "$MAIN_REPO" | sed -e 's%Packages\-%%'`"
 CHECKBOX_MAIN_REPO="<checkbox><default>true</default><label>${MAIN_DBNAME}</label><variable>CHECK_${MAIN_DBNAME}</variable><visible>disabled</visible></checkbox>" #hard coded "true"
 
-DBFILESLIST="$(ls -1 /root/.packages/Packages-*)" #121129
+DBFILESLIST="$(ls -1 /root/.packages/repo/Packages-*)" #121129
 
 PKG_REPOS_ENABLED=" ${PKG_REPOS_ENABLED} " #121129 precaution.
 for ONEREPO in `echo "$DBFILESLIST" | grep -v "${MAIN_REPO}" | tr '\n' ' '` #120515 fix. 121129
@@ -164,7 +164,7 @@ S='<window title="'$(gettext 'Puppy Package Manager - Configure')'" icon-name="g
                 '"`/usr/lib/gtkdialog/xml_pixmap info.svg`"'
               </vbox>
             </hbox>
-            <text xalign="0" space-expand="true" space-fill="true"><label>'$(gettext 'Technical note: if you would like to see the package databases, they are at')' /root/.packages/Packages-*. '$(gettext 'These are in a standardised format, regardless of which distribution they were obtained from. This format is considerably smaller than that of the original distro.')'</label></text>
+            <text xalign="0" space-expand="true" space-fill="true"><label>'$(gettext 'Technical note: if you would like to see the package databases, they are at')' /root/.packages/repo/Packages-*. '$(gettext 'These are in a standardised format, regardless of which distribution they were obtained from. This format is considerably smaller than that of the original distro.')'</label></text>
           </hbox>
         </vbox>
         <label>'$(gettext 'More info')'</label>
