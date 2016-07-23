@@ -115,7 +115,7 @@ $(gettext 'These needed libraries exist but are not in the library search path (
  fi
 
  export REPORT_DIALOG='
- <window title="'$(gettext 'Puppy Package Manager')'" icon-name="gtk-about" default_height="550">
+ <window title="'$(gettext 'Puppy Package Manager')'" icon-name="gtk-about" default_height="500" default_width="600">
  <vbox>
   '"`/usr/lib/gtkdialog/xml_info fixed package_add.svg 60 " " "$(gettext "Package install/download report")"`"'
   <hbox space-expand="true" space-fill="true">
