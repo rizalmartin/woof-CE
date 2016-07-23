@@ -65,7 +65,7 @@ PKG_FIRST_CHAR='a-z0-9'
 X1PID=$!
 
 #which repo...
-FIRST_DB="`ls -1 /root/.packages/Packages-${DISTRO_BINARY_COMPAT}-${DISTRO_COMPAT_VERSION}* | head -n 1 | rev | cut -f 1 -d '/' | rev | cut -f 2-4 -d '-'`"
+FIRST_DB="`ls -1 /root/.packages/repo/Packages-${DISTRO_BINARY_COMPAT}-${DISTRO_COMPAT_VERSION}* | head -n 1 | rev | cut -f 1 -d '/' | rev | cut -f 2-4 -d '-'`"
 fltrREPO_TRIAD="$FIRST_DB" #ex: slackware-12.2-official
 #or, a selection was made in the main gui (pkg_chooser.sh)...
 [ -f /tmp/petget/current-repo-triad ] && fltrREPO_TRIAD="`cat /tmp/petget/current-repo-triad`"
