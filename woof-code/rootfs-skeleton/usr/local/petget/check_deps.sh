@@ -107,15 +107,12 @@ dependcheckfunc() {
   [ "$FNDOO" = "" ] && LD_LIBRARY_PATH="${FNDOO}/program:${LD_LIBRARY_PATH}"
  fi
 
- FNDFILES="`cat /root/.packages/$APKGNAME.files`"
- oldIFS=$IFS
- IFS='
-'
+ FNDFILES="`cat /root/.packages/package-files/$APKGNAME.files`"
  for ONEFILE in $FNDFILES
  do
-  ISANEXEC="`file --brief "${ONEFILE}" | grep -s --extended-regexp "LSB executable|shared object"`"
+  ISANEXEC="`file --brief $ONEFILE | grep --extended-regexp "LSB executable|shared object"`"
   if [ ! "$ISANEXEC" = "" ];then
-   LDDRESULT="`ldd "${ONEFILE}"`"
+   LDDRESULT="`ldd $ONEFILE`"
    MISSINGLIBS="`echo "$LDDRESULT" | grep "not found" | cut -f 2 | cut -f 1 -d " " | tr "\n" " "`"
    if [ ! "$MISSINGLIBS" = "" ];then
     echo "$(gettext 'File') $ONEFILE $(gettext 'has these missing library files:')" >> /tmp/missinglibs_details.txt #100718
@@ -124,7 +121,6 @@ dependcheckfunc() {
    fi
   fi
  done
- IFS=$oldIFS
  if [ -s /tmp/missinglibs.txt ];then #100718 reduce size of list, to fit in window...
   MISSINGLIBSLIST="`cat /tmp/missinglibs.txt | tr '\n' ' ' | tr -s ' ' | tr ' ' '\n' | sort -u | tr '\n' ' '`"
   echo "$MISSINGLIBSLIST" > /tmp/missinglibs.txt
@@ -242,7 +238,7 @@ PKGS="$APKGNAME"
 
 #120905 vertical scrollbars, fix window too high...
 if [ ! -f /tmp/install_quietly ]; then
-export DEPS_DIALOG="<window title=\"$(gettext 'Puppy Package Manager')\" icon-name=\"gtk-about\">
+export DEPS_DIALOG="<window title=\"$(gettext 'Puppy Package Manager')\" icon-name=\"gtk-about\" default_width=\"600\">
   <vbox>
    <text><label>$(gettext 'Puppy has searched for any missing shared libraries of these packages:')</label></text>
    <vbox scrollable=\"true\" height=\"100\">
