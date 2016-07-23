@@ -54,7 +54,7 @@ EOF
 
  # Info window/dialogue (display and option to save "missing" info)
  export REPORT_DIALOG='
- <window title="'$(gettext 'Puppy Package Manager')'" icon-name="gtk-about" default_height="550">
+ <window title="'$(gettext 'Puppy Package Manager')'" icon-name="gtk-about" default_height="500" default_width="600">
  <vbox space-expand="true" space-fill="true">
    '"`/usr/lib/gtkdialog/xml_info fixed package_remove.svg 60 " " "$(gettext "Remove packages report")"`"'
    <hbox space-expand="true" space-fill="true">
