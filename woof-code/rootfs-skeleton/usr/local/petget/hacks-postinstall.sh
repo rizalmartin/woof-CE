@@ -67,7 +67,7 @@ Categories=WebBrowser;' > /usr/share/applications/google-chrome.desktop
   esac
   #130326 font size fix for 96 dpi...
   if [ "$INSTALLEDNAME" ];then
-   JWMTHEMEFILE="$(grep '^/root/\.jwm/themes/.*-jwmrc$' /root/.packages/${INSTALLEDNAME}.files | head -n 1)"
+   JWMTHEMEFILE="$(grep '^/root/\.jwm/themes/.*-jwmrc$' /root/.packages/package-files/${INSTALLEDNAME}.files | head -n 1)"
    [ "$JWMTHEMEFILE" ] && hackfontsize "JWMTHEMES='${JWMTHEMEFILE}'"
   fi
  ;;
@@ -97,7 +97,7 @@ Categories=WebBrowser;' > /usr/share/applications/google-chrome.desktop
   esac
   #130326 font size fix for 96 dpi...
   if [ "$INSTALLEDNAME" ];then
-   GTKTHEMEFILE="$(grep '^/usr/share/themes/.*/gtk-2\.0/gtkrc$' /root/.packages/${INSTALLEDNAME}.files | head -n 1)"
+   GTKTHEMEFILE="$(grep '^/usr/share/themes/.*/gtk-2\.0/gtkrc$' /root/.packages/package-files/${INSTALLEDNAME}.files | head -n 1)"
    [ "$GTKTHEMEFILE" ] && hackfontsize "GTKRCS='${GTKTHEMEFILE}'"
   fi
  ;;
