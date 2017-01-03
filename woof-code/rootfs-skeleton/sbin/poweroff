@@ -5,6 +5,13 @@
 
 script=${0##*/}
 
+ #Check if acpi or apm is supported
+ if [ -d /proc/acpi ] || [ -d /proc/apm ]; then
+ smartpower=1
+ else
+ smartpower=0
+ fi
+
 . /etc/rc.d/PUPSTATE
 [ "$PUPMODE" = "5" ] && [ $PPID -eq 1 ] && touch /tmp/shutdownconfig_results && sync  #skip shutdownconfig
 
@@ -26,6 +33,24 @@ case $script in
  *) exit ;;
 esac
 
+if
+
+if [ "$script" == "poweroff" ] && [ $smartpower -eq 1 ]; then
 exec ${EXE}
+elif [ "$script" == "reboot" ]; then
+exec ${EXE}
+else
+#ACPI or APM not supported
+
+dialog --infobox "IT'S NOW SAFE TO TURN OFF YOUR COMPUTER" 3 43
+
+#disable shell input
+while :
+do
+echo "wait" > /dev/null
+sleep 1
+done
+
+fi
 
 ### END ###
