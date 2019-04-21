@@ -354,7 +354,15 @@ HAS_PROFILE=""
 HAS_ICONS=""
 HAS_GLIB_SCHEMA=""
 HAS_32BIT=""
-SKIP_AFTERWORK=""	#v2.0.9
+SKIP_AFTERWORK=""
+
+HAS_GCONV=""
+HAS_GIO=""
+HAS_PANG0=""
+HAS_MIME=""
+HAS_GTKIM=""
+HAS_PIXBUF=""
+#v2.0.9
 
 has_afterwork() {
 	[ "$SKIP_HAS_AFTERWORK" ] && return	#v2.0.9
@@ -366,6 +374,14 @@ has_afterwork() {
 	HAS_PROFILE=$(ls $MNTPNT/etc/profile.d 2>/dev/null) # 28 Oct 2011
 	HAS_ICONS=$(find -L $MNTPNT/usr/share/icons/hicolor -not -type d -printf '/%P\n' 2>/dev/null)
 	HAS_GLIB_SCHEMA=$(ls $MNTPNT/usr/share/glib-2.0/schemas/ 2>/dev/null)
+	
+	HAS_GCONV=$(ls $MNTPNT/usr/lib/gconv 2>/dev/null)	
+	HAS_GIO=$(ls $MNTPNT/usr/lib/gio/modules 2>/dev/null)	
+	HAS_PANG0=$(ls $MNTPNT/usr/lib/pango 2>/dev/null)
+	HAS_MIME=$(ls $MNTPNT/usr/share/mime 2>/dev/null)
+	HAS_GTKIM=$(ls $MNTPNT/usr/lib/gtk-*/immodules 2>/dev/null)
+	HAS_PIXBUF=$(ls $MNTPNT/usr/lib/gdk-pixbuf* 2>/dev/null)
+		
 	if [ "$DISTRO_ARCHDIR" = "x86_64-linux-gnu" ] ; then
 		HAS_32BIT=$(ls $MNTPNT/usr/lib/i386-linux-gnu/ 2>/dev/null)
 	fi
@@ -390,6 +406,14 @@ has_afterwork() {
 	echo $HAS_ICONS >> "$MYTMPDIR/has_icons"
 	echo $HAS_GLIB_SCHEMA >> "$MYTMPDIR/has_glib_schema"
 	echo $HAS_32BIT >> "$MYTMPDIR/has_32bit"
+	
+	echo $HAS_GCONV > "$MYTMPDIR/has_gconv"
+	echo $HAS_GIO > "$MYTMPDIR/has_gio"
+	echo $HAS_PANGO > "$MYTMPDIR/has_pango"
+	echo $HAS_MIME > "$MYTMPDIR/has_mime"
+	echo $HAS_GTKIM > "$MYTMPDIR/has_gtkim"
+	echo $HAS_PIXBUF > "$MYTMPDIR/has_pixbuf"
+	
 }
 
 afterwork() {
@@ -426,6 +450,25 @@ afterwork() {
 	fi
 	[ "$HAS_ICONS" ] && gtk-update-icon-cache -f /usr/share/icons/hicolor/
 	[ "$HAS_GLIB_SCHEMA" ] && /usr/bin/glib-compile-schemas /usr/share/glib-2.0/schemas/ 
+	
+	[ "$HAS_GCONV" ] && iconvconfig
+	[ "$HAS_GIO" ] && gio-querymodules /usr/lib/gio/modules
+	[ "$HAS_PANG0" ] && pango-querymodules --update-cache
+	[ "$HAS_MIME" ] && update-mime-database /usr/share/mime
+	[ "$HAS_PIXBUF" ] && gdk-pixbuf-query-loaders --update-cache
+
+	if [ "$HAS_GTKIM" != "" ]; then
+	 for gtkver in '1.0' '2.0' '3.0'
+	 do
+ 	  gtk-query-immodules-$gtkver --update-cache 2>/dev/null
+	 done
+	fi
+
+	if [ "$HAS_DESKTOPS" != "" ]; then
+	 rm -f /usr/share/applications/mimeinfo.cache
+ 	 update-desktop-database /usr/share/applications
+	fi
+	
 	[ "$HAS_32BIT" ] && /sbin/ldconfig && gdk-pixbuf-query-loaders32 > /usr/lib/i386-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders.cache
 	[ "$HAS_PINS" ] && mergepin
 	[ "$HAS_PINS_REMOVED" ] && removepin
@@ -1807,7 +1850,15 @@ if [ "$STARTSCRIPT" ]; then
 			echo "y" > "$MYTMPDIR/has_desktops"
 			echo "y" > "$MYTMPDIR/has_icons"
 			echo "y" > "$MYTMPDIR/has_glib_schema"
-			echo "/usr/sharefonts" > "$MYTMPDIR/has_fonts"	###FIXME subdirs ###
+			
+			echo "y" > "$MYTMPDIR/has_gconv"
+			echo "y" > "$MYTMPDIR/has_gio"
+			echo "y" > "$MYTMPDIR/has_pango"
+			echo "y" > "$MYTMPDIR/has_mime"
+			echo "y" > "$MYTMPDIR/has_gtkim"
+			echo "y" > "$MYTMPDIR/has_pixbuf"
+			
+			echo "/usr/share/fonts" > "$MYTMPDIR/has_fonts"	###FIXME subdirs ###
 			#puppy pins
 			if [ -s "/root/Choices/ROX-Filer/PuppyPin" ]; then
 				cp -f "/root/Choices/ROX-Filer/globicons" "$MYTMPDIR/globicons-sfs_load"
