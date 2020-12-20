@@ -1,0 +1,23 @@
+#!/bin/sh
+#Disable mtp gphoto2 gvfs volume monitors
+#Disable udisks2 gvfs monitor if pup-volume-monitor is present
+
+for gvfs_file in org.gtk.vfs.MTPVolumeMonitor.service org.gtk.vfs.GPhoto2VolumeMonitor.service mtp.monitor gphoto2.monitor
+do
+ for file1 in find /usr -type f -name "$gvfs_file"
+ do
+  mv -f $file1 ${file1}.bak
+ done
+done
+
+if [ "$(which pup-volume-monitor)" != "" ]; then
+
+  for gvfs_file in org.gtk.vfs.UDisks2VolumeMonitor.service udisks2.monitor
+  do
+   for file1 in find /usr -type f -name "$gvfs_file"
+   do
+    mv -f $file1 ${file1}.bak
+   done
+  done
+  
+fi
